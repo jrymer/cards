@@ -1,12 +1,10 @@
 import { combineReducers, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { blitzPileReducer, initialBlitzPileState } from './blitzPile/reducer';
 import { dutchPileReducer, initialDutchPileState } from './dutchPile/reducer';
 import { initialPostPileState, postPileReducer } from './postPile/reducer';
 import { initialWoodPileState, woodPileReducer } from './woodPile/reducer';
-
-
-// import { composeWithDevTools } from 'redux-devtools-extension';
 
 
 const rootReducer = combineReducers({
@@ -26,7 +24,7 @@ const initialRootState = {
 export const store = createStore(
   rootReducer,
   initialRootState,
-  // composeWithDevTools()
+  composeWithDevTools()
 );
 
 export type AppState = ReturnType<typeof rootReducer>;
