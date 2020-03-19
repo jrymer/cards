@@ -6,14 +6,14 @@ export enum CardColorValues {
 };
 
 export enum CardColorNames {
-  RED,
-  BLUE,
-  GREEN,
-  YELLOW
+  RED = 'RED',
+  BLUE = 'BLUE',
+  GREEN = 'GREEN',
+  YELLOW = 'YELLOW'
 }
 
 export interface ICard {
-  color: CardColorNames,
+  color: CardColorNames
   cardValue: number
 };
 
