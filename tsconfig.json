@@ -11,7 +11,9 @@
       "baseUrl": ".",
       "paths": {
         "components/*": ["src/components/*"],
-        "store/*": ["src/redux/*"]
+        "store/*": ["src/redux/*"],
+        "models/*": ["src/models/*"],
+        "utils/*": ["src/utils/*"]
       }
   },
   "exclude": ["node_modules", "dist"]

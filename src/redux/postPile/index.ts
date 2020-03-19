@@ -1,4 +1,4 @@
-import { ICard } from 'store/card';
+import { ICard } from 'models/card';
 
 // Groups of cards placed to the left of both the Blitz and Wood piles in
 // DESCENDING sequence For each player, the Post Piles serve as a "trading" or

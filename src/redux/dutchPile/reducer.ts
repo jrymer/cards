@@ -2,7 +2,7 @@ import { IDutchPileState } from 'store/dutchPile';
 
 export const initialDutchPileState: IDutchPileState  = {
   color: null,
-  state: null,
+  cardValue: null,
   active: false
 };
 

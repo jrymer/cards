@@ -7,7 +7,9 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
     alias: {
       "components": path.resolve(__dirname, 'src/components/'),
-      "store": path.resolve(__dirname, 'src/redux/')
+      "store": path.resolve(__dirname, 'src/redux/'),
+      "models": path.resolve(__dirname, 'src/models/'),
+      "utils": path.resolve(__dirname, 'src/utils')
     }
   },
   output: {

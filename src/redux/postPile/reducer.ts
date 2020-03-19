@@ -4,7 +4,7 @@ export const initialPostPileState: IPostPileState = {
   availableCards: [
     {
       color: null,
-      state: 0
+      cardValue: 0
     }
   ]
 };

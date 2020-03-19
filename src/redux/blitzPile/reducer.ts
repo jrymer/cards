@@ -1,5 +1,5 @@
+import { initialTopCard } from 'models/card';
 import { IBlitzPileState } from 'store/blitzPile';
-import { initialTopCard } from 'store/card';
 
 export const initialBlitzPileState: IBlitzPileState  = {
   cardsRemaining: null,
