@@ -1,14 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const cardContainer = styled.div`
-  color: 'red'
+const Wrapper = styled.section`
+  padding: 4em;
+  background: papayawhip;
 `;
 
 export const Card: React.FC = () => {
   return (
-    <cardContainer>
+    <Wrapper>
       his
-    </cardContainer>
+    </Wrapper>
   )
 }
