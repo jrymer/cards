@@ -1,9 +1,11 @@
-import { IBlitzPileState } from './blitzPile';
+import { IBlitzPileState } from 'store/blitzPile';
+import { initialTopCard } from 'store/card';
 
 export const initialBlitzPileState: IBlitzPileState  = {
-  void: ''
+  cardsRemaining: null,
+  topCard: initialTopCard
 };
 
 export const blitzPileReducer = (): IBlitzPileState => {
-  return {void: ''};
+  return initialBlitzPileState;
 };

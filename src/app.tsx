@@ -1,3 +1,4 @@
+import { Board } from 'components/board';
 import React from 'react';
 import { Provider } from 'react-redux';
 
@@ -7,9 +8,7 @@ export class App extends React.Component {
   public render() {
     return (
       <Provider store={store}>
-          <div>
-            hi
-          </div>
+          <Board />
       </Provider>
     );
   }

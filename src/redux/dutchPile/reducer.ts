@@ -1,9 +1,11 @@
-import { IDutchPileState } from './dutchPile';
+import { IDutchPileState } from 'store/dutchPile';
 
 export const initialDutchPileState: IDutchPileState  = {
-  void: ''
+  color: null,
+  state: null,
+  active: false
 };
 
 export const dutchPileReducer = (): IDutchPileState => {
-  return {void: ''};
+  return initialDutchPileState;
 };

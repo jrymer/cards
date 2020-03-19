@@ -16,25 +16,11 @@ module.exports = {
   },
   module: {
     rules: [
-      // {
-      //   test: /\.ts?$/,
-      //   loader: 'ts-loader'
-      // },
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader'
-      },
-      // {
-      //   test: /[.]tsx?$/,
-      //   exclude: /(node_modules)/,
-      //   enforce: 'pre',
-      //   loader: 'awesome-typescript-loader'
-      // },
-      // {
-      //   test: /[.]tsx?$/,
-      //   exclude: /(node_modules)/,
-      //   loader: 'awesome-typescript-loader'
-      // }
+        exclude: /(node_modules)/,
+        loader: 'babel-loader'
+      }
     ]
   },
   plugins: [

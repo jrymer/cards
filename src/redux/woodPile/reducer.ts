@@ -1,9 +1,11 @@
-import { IWoodPileState } from './woodPile';
+import { initialTopCard } from 'store/card';
+import { IWoodPileState } from 'store/woodPile';
 
 export const initialWoodPileState: IWoodPileState  = {
-  void: ''
+  cardsRemaining: null,
+  topCard: initialTopCard
 };
 
 export const woodPileReducer = (): IWoodPileState => {
-  return {void: ''};
+  return initialWoodPileState;
 };
