@@ -1,14 +1,4 @@
-import { CardColorNames, ICard } from 'models/card';
-
-/**
- * Builds a random card with random number and color
- *
- * @returns {ICard} Card that was randomly genned
- */
-export const cardRandomizer = (): ICard => ({
-  cardValue: Math.floor(Math.random() * Math.floor(10)) + 1,
-  color: randomColor()
-});
+import { Card, CardColorNames } from 'models/card';
 
 /**
  * Returns the color names for the CardColorNames enums as a string array
@@ -34,7 +24,7 @@ export const getTypeSafeColorName = (color: string): CardColorNames => {
       return CardColorNames.GREEN
     case CardColorNames.YELLOW:
       return CardColorNames.YELLOW
-  };
+  }
 };
 
 /**
@@ -50,3 +40,13 @@ export const randomColor = (): CardColorNames => {
   // Doing this for type safety
   return getTypeSafeColorName(randomValue);
 }
+
+/**
+ * Builds a random card with random number and color
+ *
+ * @returns {Card} Card that was randomly genned
+ */
+export const cardRandomizer = (): Card => ({
+  cardValue: Math.floor(Math.random() * Math.floor(10)) + 1,
+  color: randomColor()
+});

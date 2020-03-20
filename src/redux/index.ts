@@ -1,24 +1,33 @@
 import { combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { BlitzPileState } from 'store/blitzPile';
+import { blitzPileReducer, initialBlitzPileState } from 'store/blitzPile/reducer';
+import { DutchPileState } from 'store/dutchPile';
+import { dutchPileReducer, initialDutchPileState } from 'store/dutchPile/reducer';
+import { PostPileState } from 'store/postPile';
+import { initialPostPileState, postPileReducer } from 'store/postPile/reducer';
+import { WoodPileState } from 'store/woodPile';
+import { initialWoodPileState, woodPileReducer } from 'store/woodPile/reducer';
 
-import { blitzPileReducer, initialBlitzPileState } from './blitzPile/reducer';
-import { dutchPileReducer, initialDutchPileState } from './dutchPile/reducer';
-import { initialPostPileState, postPileReducer } from './postPile/reducer';
-import { initialWoodPileState, woodPileReducer } from './woodPile/reducer';
-
+export interface State {
+  blitzPile: BlitzPileState;
+  dutchPile: DutchPileState;
+  postPile: PostPileState;
+  woodPile: WoodPileState;
+}
 
 const rootReducer = combineReducers({
-  blitzPileState: blitzPileReducer,
-  dutchPileState: dutchPileReducer,
-  postPileState: postPileReducer,
-  woodPileState: woodPileReducer
+  blitzPile: blitzPileReducer,
+  dutchPile: dutchPileReducer,
+  postPile: postPileReducer,
+  woodPile: woodPileReducer
 });
 
-const initialRootState = {
-  blitzPileState: initialBlitzPileState,
-  dutchPileState: initialDutchPileState,
-  postPileState: initialPostPileState,
-  woodPileState: initialWoodPileState
+const initialRootState: State = {
+  blitzPile: initialBlitzPileState,
+  dutchPile: initialDutchPileState,
+  postPile: initialPostPileState,
+  woodPile: initialWoodPileState
 };
 
 export const store = createStore(

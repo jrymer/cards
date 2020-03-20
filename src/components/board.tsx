@@ -1,6 +1,11 @@
-import { Card } from 'components/card';
-import { ICard } from 'models/card';
+import { BlitzDeck } from 'components/blitzDeck';
+import { PostPile } from 'components/postPile';
+import { WoodPile } from 'components/woodPile';
 import * as React from 'react';
+import { useDispatch } from 'react-redux';
+import { initializeBlitzDeck } from 'store/blitzPile/actions';
+import { initializePostPile } from 'store/postPile/actions';
+import { initializeWoodPile } from 'store/woodPile/actions';
 import styled from 'styled-components';
 import { buildDeck } from 'utils/deckFunctions';
 
@@ -10,9 +15,21 @@ const BoardContainer = styled.div`
 `;
 
 export const Board: React.FC = () => {
+  const dispatch = useDispatch();
+
   const deck = buildDeck();
-  const deckOfCards = deck.map((card: ICard) => (
-    <Card key={`${card.color}-${card.cardValue}`} card={{...card}} />)
-  );
-  return (<BoardContainer>{deckOfCards}</BoardContainer>);
+  const blitzDeck = deck.splice(0, 10);
+  const postDeck = deck.splice(0, 3);
+
+  console.log(deck.length);
+  dispatch(initializeBlitzDeck(blitzDeck));
+  dispatch(initializePostPile(postDeck));
+  dispatch(initializeWoodPile(deck));
+
+  return (
+    <BoardContainer>
+      <BlitzDeck />
+      <PostPile />
+      <WoodPile />
+    </BoardContainer>);
 }

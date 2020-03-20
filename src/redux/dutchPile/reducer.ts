@@ -1,11 +1,11 @@
-import { IDutchPileState } from 'store/dutchPile';
+import { DutchPileState } from 'store/dutchPile';
 
-export const initialDutchPileState: IDutchPileState  = {
+export const initialDutchPileState: DutchPileState  = {
   color: null,
   cardValue: null,
   active: false
 };
 
-export const dutchPileReducer = (): IDutchPileState => {
+export const dutchPileReducer = (): DutchPileState => {
   return initialDutchPileState;
 };
