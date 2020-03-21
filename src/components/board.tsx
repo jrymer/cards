@@ -1,4 +1,5 @@
 import { BlitzDeck } from 'components/blitzDeck';
+import { DutchPileContainerComponent } from 'components/dutchPile/dutchPileContainer';
 import { PostPile } from 'components/postPile';
 import { WoodPile } from 'components/woodPile';
 import * as React from 'react';
@@ -11,7 +12,13 @@ import { buildDeck } from 'utils/deckFunctions';
 
 const BoardContainer = styled.div`
   display: flex;
+  flex-direction: column;
+`;
+
+const PlayerHandContainer = styled.div`
+  display: flex;
   flex-direction: row;
+  border: solid black;
 `;
 
 export const Board: React.FC = () => {
@@ -21,15 +28,17 @@ export const Board: React.FC = () => {
   const blitzDeck = deck.splice(0, 10);
   const postDeck = deck.splice(0, 3);
 
-  console.log(deck.length);
   dispatch(initializeBlitzDeck(blitzDeck));
   dispatch(initializePostPile(postDeck));
   dispatch(initializeWoodPile(deck));
 
   return (
     <BoardContainer>
-      <BlitzDeck />
-      <PostPile />
-      <WoodPile />
+      <DutchPileContainerComponent />
+      <PlayerHandContainer>
+        <BlitzDeck />
+        <PostPile />
+        <WoodPile />
+      </PlayerHandContainer>
     </BoardContainer>);
 }

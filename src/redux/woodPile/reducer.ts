@@ -25,6 +25,15 @@ export const woodPileReducer = (state = initialWoodPileState, action: woodPileAc
         woodPile: topThreeToBack
       }
     }
+    case woodPileActions.REMOVE_CARD_FROM_WOOD_PILE:
+      return {
+        ...state,
+        woodPile: [...state.woodPile.slice(1)]
+      }
+    case woodPileActions.SHUFFLE_WOOD_PILE:
+      return {
+        woodPile: [...state.woodPile.slice(1).concat(state.woodPile.slice(0, 1))]
+      }
     default:
       return state;
   }

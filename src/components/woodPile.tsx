@@ -1,26 +1,50 @@
 import { CardComponent } from 'components/card';
+import { Card } from 'models/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { redrawWoodPile } from 'store/woodPile/actions';
+import { setActiveWoodCard } from 'store/dutchPile/actions';
+import { redrawWoodPile, shuffleWoodPile } from 'store/woodPile/actions';
 import { selectTopCardFromWoodPile } from 'store/woodPile/selectors';
 import styled from 'styled-components';
 
 const WoodPileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-left: 4px;
+`;
+const DrawCardContainer = styled.div`
+  border: solid grey;
+  width: 24px;
+  height: 24px;
+`;
+const ShuffleCardContainer = styled.div`
+  border: solid brown;
+  width: 24px;
+  height: 24px;
 `;
 
 export const WoodPile: React.FC = () => {
   const dispatch = useDispatch();
   const topCard = useSelector(selectTopCardFromWoodPile);
 
-  const handleTopCardClicked = (): void => {
+  const handleRedrawTopCard = (): void => {
     dispatch(redrawWoodPile());
   };
+
+  const handleAddTopCardToDutchPile = (card: Card): void => {
+    dispatch(setActiveWoodCard(card));
+  };
+
+  const handleShuffleCard = (): void => {
+    dispatch(shuffleWoodPile());
+  }
 
   return (
     <WoodPileContainer>
       Wood pile
-      <CardComponent handleClick={handleTopCardClicked} card={{...topCard}}/>
+      <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} />
+      <DrawCardContainer onClick={handleRedrawTopCard}>D</DrawCardContainer> 
+      <ShuffleCardContainer onClick={handleShuffleCard}>S</ShuffleCardContainer>
     </WoodPileContainer>
   )
 };

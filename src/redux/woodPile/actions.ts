@@ -3,6 +3,8 @@ import { Card } from 'models/card';
 export const INITIALIZE_WOOD_PILE = '[WOOD] INITIALIZE_WOOD_PILE';
 export const PLAY_WOOD_PILE_TOP_CARD = '[WOOD] PLAY_WOOD_PILE_TOP_CARD';
 export const REDRAW_WOOD_PILE = '[WOOD] REDRAW_WOOD_PILE';
+export const REMOVE_CARD_FROM_WOOD_PILE = '[WOOD] REMOVE_CARD_FROM_WOOD_PILE';
+export const SHUFFLE_WOOD_PILE = '[WOOD] SHUFFLE_WOOD_PILE';
 
 interface InitializeWoodPileAction {
   type: typeof INITIALIZE_WOOD_PILE;
@@ -15,6 +17,15 @@ interface RedrawWoodPile {
 
 interface PlayWoodPileTopCard {
   type: typeof PLAY_WOOD_PILE_TOP_CARD;
+}
+
+interface RemoveCardFromWoodPile {
+  type: typeof REMOVE_CARD_FROM_WOOD_PILE;
+  payload: Card;
+}
+
+interface ShuffleWoodPile {
+  type: typeof SHUFFLE_WOOD_PILE;
 }
 
 export const initializeWoodPile = (deck: Card[]): InitializeWoodPileAction => {
@@ -36,6 +47,21 @@ export const playWoodPileTopCard = (): PlayWoodPileTopCard => {
   }
 };
 
+export const removeCardFromWoodPile = (card: Card): RemoveCardFromWoodPile => {
+  return {
+    type: REMOVE_CARD_FROM_WOOD_PILE,
+    payload: card
+  }
+};
+
+export const shuffleWoodPile = (): ShuffleWoodPile => {
+  return {
+    type: SHUFFLE_WOOD_PILE
+  }
+};
+
 export type WoodPileActionTypes = InitializeWoodPileAction
   | RedrawWoodPile
-  | PlayWoodPileTopCard;
+  | PlayWoodPileTopCard
+  | RemoveCardFromWoodPile
+  | ShuffleWoodPile;
