@@ -1,22 +1,23 @@
-import { ICard } from 'models/card';
+import { Card } from 'models/card';
 import React from 'react';
 import styled from 'styled-components';
 import { colorTransformer } from 'utils/colorTransformer';
 
 interface CardProps {
-  card: ICard;
-};
+  card: Card;
+  handleClick?: (card: Card) => void;
+}
 
 interface CardContainerProps {
   color: string;
-};
+}
 
 const CardContainer =  styled.section<CardContainerProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
-  background: ${p => p.color};
+  background: ${(p: CardContainerProps): string => p.color};
   width: 24px;
   height: 24px;
 `;
@@ -24,12 +25,15 @@ const CardContainer =  styled.section<CardContainerProps>`
 /**
  * Renders a card with a number and colored background
  *
- * @param {ICard} {card} Card object with color and number value
+ * @param {Card} {card} Card object with color and number value
  */
-export const Card: React.FC<CardProps> = ({card}) => {
+export const CardComponent: React.FC<CardProps> = ({card, handleClick}) => {
   const {color, cardValue} = card;
+
+  const handleCardClick = (): void => handleClick(card);
+
   return (
-    <CardContainer color={colorTransformer(color)}>
+    <CardContainer onClick={handleCardClick} color={colorTransformer(color)}>
       {cardValue}
     </CardContainer>
   )

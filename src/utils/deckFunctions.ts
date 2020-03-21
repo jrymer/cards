@@ -1,17 +1,31 @@
-import { ICard } from 'models/card';
+import { Card } from 'models/card';
 import { getColorNameValues, getTypeSafeColorName } from 'utils/cardFunctions';
+
+/**
+ * Shuffles the deck
+ *
+ * @param {Card[]} deck Deck to be shuffled
+ * @returns {Card[]} Shuffled deck
+ */
+export const shuffleDeck = (deck: Card[]): Card[] => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+};
 
 /**
  * Builds the initial deck of 40 cards and shuffles it.
  *
- * @returns {ICard[]} Shuffled array of ICard arrays
+ * @returns {Card[]} Shuffled array of Card arrays
  */
-export const buildDeck = (): ICard[] => {
+export const buildDeck = (): Card[] => {
   const cardColors: string[] = getColorNameValues();
   const deck = cardColors.flatMap((color: string) => {
-    const subDeck: ICard[] = [];
+    const subDeck: Card[] = [];
     for (let i = 0; i < 10; i++) {
-      const card: ICard = { color: getTypeSafeColorName(color), cardValue: i + 1 };
+      const card: Card = { color: getTypeSafeColorName(color), cardValue: i + 1 };
       subDeck.push(card);
     }
 
@@ -19,18 +33,4 @@ export const buildDeck = (): ICard[] => {
   });
 
   return shuffleDeck(deck);
-};
-
-/**
- * Shuffles the deck
- *
- * @param {ICard[]} deck Deck to be shuffled
- * @returns {ICard[]} Shuffled deck
- */
-export const shuffleDeck = (deck: ICard[]): ICard[] => {
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
-  return deck;
 };

@@ -4,12 +4,10 @@ import { Provider } from 'react-redux';
 
 import { store } from './redux';
 
-export class App extends React.Component {
-  public render() {
-    return (
-      <Provider store={store}>
-          <Board />
-      </Provider>
-    );
-  }
+export const App: React.Component<Props> = () => {
+  return (
+    <Provider store={store}>
+      <Board />
+    </Provider>
+  );
 }

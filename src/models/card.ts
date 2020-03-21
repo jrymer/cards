@@ -3,7 +3,7 @@ export enum CardColorValues {
   BLUE = '#00559f',
   GREEN = '#168F45',
   YELLOW = '#FAED24'
-};
+}
 
 export enum CardColorNames {
   RED = 'RED',
@@ -12,12 +12,12 @@ export enum CardColorNames {
   YELLOW = 'YELLOW'
 }
 
-export interface ICard {
-  color: CardColorNames
-  cardValue: number
-};
+export interface Card {
+  color: CardColorNames;
+  cardValue: number;
+}
 
-export const initialTopCard: ICard = {
+export const initialTopCard: Card = {
   color: null,
   cardValue: 0
 };
