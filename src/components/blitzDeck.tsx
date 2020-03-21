@@ -1,8 +1,8 @@
 import { CardComponent } from 'components/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { newTopBlitzCard } from 'store/blitzPile/actions';
 import { selectTopCardFromBlitzDeck } from 'store/blitzPile/selectors';
+import { setActiveBlitzCard } from 'store/dutchPile/actions';
 import styled from 'styled-components';
 
 const BlitzDeckContainer = styled.div`
@@ -14,7 +14,7 @@ export const BlitzDeck: React.FC = () => {
   const topCard = useSelector(selectTopCardFromBlitzDeck);
 
   const handleTopCardClicked = (): void => {
-    dispatch(newTopBlitzCard());
+    dispatch(setActiveBlitzCard(topCard));
   };
 
   return (
