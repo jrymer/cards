@@ -15,7 +15,7 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
     case dutchPileActions.SET_ACTIVE_WOOD_CARD:
       return {
         ...state,
-        activeCard: {...action.payload}
+        activeCard: { ...action.payload }
       };
     case dutchPileActions.CREATE_DUTCH_PILE: {
       const { cardValue } = action.payload;
@@ -28,7 +28,7 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
         }
       }
     }
-    case dutchPileActions.ADD_ACTIVE_CARD_TO_DUTCH_PILE: {
+    case dutchPileActions.ADD_ACTIVE_CARD_TO_DUTCH_PILE:
       return {
         ...state,
         activePiles: {
@@ -41,7 +41,6 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
           }
         }
       }
-    }
     case dutchPileActions.CLEAR_ACTIVE_CARD:
       return {
         ...state,

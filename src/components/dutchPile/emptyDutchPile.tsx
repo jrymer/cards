@@ -1,15 +1,14 @@
-import { Card } from 'models/card';
-import { Piles } from 'models/piles';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { newTopBlitzCard } from 'store/blitzPile/actions';
-import { selectTopCardFromBlitzDeck } from 'store/blitzPile/selectors';
+import { useDispatch } from 'react-redux';
+import { ActiveCard } from 'store/dutchPile';
 import { clearActiveCard, createDutchPile } from 'store/dutchPile/actions';
-import { selectActiveCard } from 'store/dutchPile/selectors';
-import { topBlitzCardToPostPile } from 'store/postPile/actions';
-import { selectPostPile } from 'store/postPile/selectors';
-import { removeCardFromWoodPile } from 'store/woodPile/actions';
 import styled from 'styled-components';
+
+
+interface EmptyDutchPileProps {
+  activeCard: ActiveCard;
+  handleValidPileClick: () => void;
+}
 
 const ValidEmptyDutchPile = styled.div`
   border: solid green;
@@ -23,35 +22,14 @@ const InvalidEmptyDutchPile = styled.div`
   height: 24px;
 `;
 
-export const EmptyDutchPileComponent: React.FC = () => {
+export const EmptyDutchPileComponent: React.FC<EmptyDutchPileProps> = ({activeCard, handleValidPileClick}) => {
   const dispatch = useDispatch();
-  const activeCard = useSelector(selectActiveCard);
-  const topBlitzDeckCard = useSelector(selectTopCardFromBlitzDeck);
-  const postPileFromState = useSelector(selectPostPile);
 
   const handleValidEmptyDutchPileClick = (): void => {
     const { card } = activeCard;
 
+    handleValidPileClick();
     dispatch(createDutchPile({ ...card }));
-    switch (activeCard.pile) {
-      case Piles.BLITZ:
-        dispatch(newTopBlitzCard());
-        break;
-      case Piles.POST: {
-        const newPostPile = postPileFromState.filter((postCards: Card): boolean => {
-          return (postCards.cardValue !== card.cardValue) || (postCards.color !== card.color);
-        });
-
-        newPostPile.push(topBlitzDeckCard);
-        dispatch(topBlitzCardToPostPile(newPostPile));
-        dispatch(newTopBlitzCard());
-        break;
-      }
-      case Piles.WOOD:
-        dispatch(removeCardFromWoodPile(card));
-        break;
-    }
-    dispatch(clearActiveCard());
   };
 
   const handleInvalidEmptyDutchPileClick = (): void => {
