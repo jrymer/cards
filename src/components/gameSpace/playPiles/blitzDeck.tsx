@@ -1,4 +1,4 @@
-import { CardComponent } from 'components/card';
+import { CardComponent } from 'components/gameSpace/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTopCardFromBlitzDeck } from 'store/blitzPile/selectors';

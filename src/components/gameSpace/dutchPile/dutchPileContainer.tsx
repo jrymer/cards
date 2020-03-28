@@ -1,5 +1,5 @@
-import { DutchPileComponent } from 'components/dutchPile/activeDutchPile';
-import { EmptyDutchPileComponent } from 'components/dutchPile/emptyDutchPile';
+import { DutchPileComponent } from 'components/gameSpace/dutchPile/activeDutchPile';
+import { EmptyDutchPileComponent } from 'components/gameSpace/dutchPile/emptyDutchPile';
 import { Card } from 'models/card';
 import { Piles } from 'models/piles';
 import React from 'react';

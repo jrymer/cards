@@ -28,7 +28,7 @@ interface ShuffleWoodPile {
   type: typeof SHUFFLE_WOOD_PILE;
 }
 
-export const initializeWoodPile = (deck: Card[]): InitializeWoodPileAction => {
+export const initializeWoodPile = (playerId: any, deck: Card[]): InitializeWoodPileAction => {
   return {
     type: INITIALIZE_WOOD_PILE,
     payload: deck

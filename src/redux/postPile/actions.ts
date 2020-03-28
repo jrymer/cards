@@ -13,7 +13,7 @@ interface TopBlitzToPostPileAction {
   payload: Card[];
 }
 
-export const initializePostPile = (deck: Card[]): InitializePostPileAction => {
+export const initializePostPile = (playerId: any, deck: Card[]): InitializePostPileAction => {
   return {
     type: INITIALIZE_POST_PILE,
     payload: deck

@@ -1,13 +1,17 @@
-import { Board } from 'components/board';
 import React from 'react';
 import { Provider } from 'react-redux';
 
 import { store } from './redux';
+import MainRoutes from './Routes';
 
-export const App: React.Component<Props> = () => {
+
+
+const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <Board />
+      <MainRoutes />
     </Provider>
   );
 }
+
+export default App;

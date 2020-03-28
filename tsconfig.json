@@ -6,7 +6,7 @@
       "noEmit": true,
       "noImplicitAny": true,
       "module": "commonjs",
-      "lib": ["es2019"],
+      "lib": ["es2019", "dom"],
       "target": "es6",
       "jsx": "react",
       "baseUrl": ".",
@@ -14,6 +14,7 @@
         "components/*": ["src/components/*"],
         "store/*": ["src/redux/*"],
         "models/*": ["src/models/*"],
+        "services/*": ["src/services/*"],
         "utils/*": ["src/utils/*"]
       }
   },
