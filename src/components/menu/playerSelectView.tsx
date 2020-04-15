@@ -39,7 +39,7 @@ export const PlayerSelect: React.FC = () => {
   };
 
   const handleStartGame = (): void => {
-    console.log(gameId);
+    
     history.push(`/${gameId}/board`);
   };
 

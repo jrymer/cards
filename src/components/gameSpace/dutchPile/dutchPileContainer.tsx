@@ -51,11 +51,12 @@ export const DutchPileContainerComponent: React.FC = () => {
     dispatch(clearActiveCard());
   };
 
-  const renderDutchPiles = (): HTMLElement => {
-    return Object.keys(dutchPiles).map((key: string) => {
-      return <DutchPileComponent key={key} activeCard={activeCard} dutchPile={dutchPiles[key]} id={key} handleValidPileClick={handleValidPileClick} />
-    })
-  }
+  const renderDutchPiles = () => (
+    Object.keys(dutchPiles).map((key: string) =>
+      <DutchPileComponent key={key} activeCard={activeCard} dutchPile={dutchPiles[key]} id={key} handleValidPileClick={handleValidPileClick} />
+    )
+  );
+
   return (
     <DutchPileContainer>
       {dutchPileKeys.length < 4 && <EmptyDutchPileComponent activeCard={activeCard} handleValidPileClick={handleValidPileClick} />}

@@ -1,4 +1,3 @@
-import { DutchPileContainerComponent } from 'components/gameSpace/dutchPile/dutchPileContainer';
 import { PlayerBoardComponent } from 'components/gameSpace/playPiles/playerBoard';
 import { PlayerNumber } from 'models/playerNumbers';
 import * as React from 'react';
@@ -12,8 +11,7 @@ const BoardContainer = styled.div`
 export const Board: React.FC = () => {
   return (
     <BoardContainer>
-      <PlayerBoardComponent playerId={PlayerNumber.BOT}/>
-      <DutchPileContainerComponent />
+      {/* <DutchPileContainerComponent /> */}
       <PlayerBoardComponent playerId={PlayerNumber.PLAYER_ONE}/>
     </BoardContainer>);
 }

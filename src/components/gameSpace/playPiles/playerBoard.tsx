@@ -1,3 +1,4 @@
+import { PlayerNumber } from 'models/playerNumbers';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { initializeBlitzDeck } from 'store/blitzPile/actions';
@@ -17,7 +18,7 @@ const PlayerHandContainer = styled.div`
 `;
 
 interface PlayerBoardProps {
-  playerId: Players;
+  playerId: PlayerNumber;
 }
 
 export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({playerId}) => {
