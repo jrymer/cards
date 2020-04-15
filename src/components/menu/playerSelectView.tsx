@@ -1,8 +1,9 @@
 import { CardColorValues } from 'models/card';
 import { PlayerNumber } from 'models/playerNumbers';
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { createPlayer } from 'services/player';
 import { Player } from 'store/players';
 import { addPlayer } from 'store/players/actions';
 import styled from 'styled-components';
@@ -24,20 +25,17 @@ export const PlayerSelect: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { gameId } = useParams();
+  const [playerName, setPlayerName] = React.useState<string>('');
 
-  const handlePlayerButtonClick = (playerId: PlayerNumber): void => {
+  const handlePlayerButtonClick = async (playerId: PlayerNumber) => {
     const player: Player = {
       id: playerId,
-      name: 'name',
+      name: playerName || playerId,
       playerNumber: playerId,
-      startTime: new Date()
+      startTime: Date.now()
     };
-
-    if (playerId === PlayerNumber.BOT) {
-      localStorage.setItem(PlayerNumber.BOT, JSON.stringify(player));
-    } else {
-      dispatch(addPlayer(player, gameId));
-    }
+    const createdPlayer = await createPlayer(player, gameId);
+    dispatch(addPlayer(createdPlayer, gameId));
   };
 
   const handleStartGame = (): void => {
@@ -50,13 +48,17 @@ export const PlayerSelect: React.FC = () => {
     const playerNames = Object.keys(PlayerNumber);
 
     return Object.values(PlayerNumber).map((playerName: PlayerNumber, index: number) => (
-      <PlayerButton key={playerName} color={colorValues[index]} onClick={(): void => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
+      <PlayerButton key={playerName} color={colorValues[index]} onClick={() => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
     ));
   };
 
+  const handlePlayerNameChange = (event: FormEvent<HTMLInputElement>): void => {
+    setPlayerName(event.currentTarget.value);
+  }
+
   return (
     <div>
-      menu
+      <input type='text' name='playerName' onChange={handlePlayerNameChange} value={playerName}></input>
       {renderPlayerButtons()}
       <StartButton onClick={handleStartGame}>START</StartButton>
     </div>

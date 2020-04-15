@@ -7,7 +7,7 @@ export interface Player {
     name: string;
     id: string;
     playerNumber: PlayerNumber
-    startTime: Date;
+    startTime: number;
 }
 
 export interface HandState {

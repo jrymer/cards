@@ -5,15 +5,15 @@ import { GameState } from './game';
 import { gameReducer } from './game/reducer';
 
 export interface State {
-  gameState: GameState;
+  games: GameState;
 }
 
 const rootReducer = combineReducers({
-  gameState: gameReducer
+  games: gameReducer
 });
 
 const initialRootState: State = {
-  gameState: null
+  games: null
 };
 
 export const store = createStore(
