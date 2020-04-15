@@ -2,13 +2,14 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: ["./src/index.tsx"],
+  entry: ["babel-polyfill", "./src/index.tsx"],
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     alias: {
       "components": path.resolve(__dirname, 'src/components/'),
       "store": path.resolve(__dirname, 'src/redux/'),
       "models": path.resolve(__dirname, 'src/models/'),
+      "services": path.resolve(__dirname, 'src/services'),
       "utils": path.resolve(__dirname, 'src/utils')
     }
   },

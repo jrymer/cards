@@ -1,17 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Hello React!</title>
-    </head>
-    <body>
-        <div id="app"></div>
 
-        <!-- Dependencies -->
-        <script src="./node_modules/react/umd/react.development.js"></script>
-        <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React!</title>
+</head>
 
-        <!-- Main -->
-        <script src="./dist/main.js"></script>
-    </body>
+<body>
+    <div id="app"></div>
+
+    <!-- Dependencies -->
+    <script src="./node_modules/react/umd/react.development.js"></script>
+    <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+
+    <!-- Main -->
+    <script src="./dist/main.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-analytics.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCeqyNKElYC664xPDT2gMANBUB-0eFQf3U",
+            authDomain: "dutchblitz-b77e6.firebaseapp.com",
+            databaseURL: "https://dutchblitz-b77e6.firebaseio.com",
+            projectId: "dutchblitz-b77e6",
+            storageBucket: "dutchblitz-b77e6.appspot.com",
+            messagingSenderId: "731384452190",
+            appId: "1:731384452190:web:1b385c4b7f9f6a3cc9d0cf",
+            measurementId: "G-7Z7WCW5BZW"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+</body>
+
 </html>
