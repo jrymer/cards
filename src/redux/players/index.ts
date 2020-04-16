@@ -11,14 +11,11 @@ export interface Player {
 }
 
 export interface HandState {
-    blitzPile: BlitzPileState,
-    postPile: PostPileState,
-    woodPile: WoodPileState
+    blitzPile: BlitzPileState;
+    postPile: PostPileState;
+    woodPile: WoodPileState;
 }
 
-export interface PlayerState {
-    [key: string]: {
-        player: Player,
-        hand: HandState
-    }
+export interface PlayerState extends Player {
+    hand: HandState;
 }

@@ -1,11 +1,11 @@
 import { CardColorValues } from 'models/card';
 import { PlayerNumber } from 'models/playerNumbers';
 import React, { FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { createPlayer } from 'services/player';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { selectGameId } from 'store/game/selectors';
 import { Player } from 'store/players';
-import { addPlayer } from 'store/players/actions';
+import { initializePlayer } from 'store/players/operations';
 import styled from 'styled-components';
 
 interface PlayerButtonProps {
@@ -24,9 +24,9 @@ const StartButton = styled.button`
 export const PlayerSelect: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { gameId } = useParams();
+  const gameId = useSelector(selectGameId);
   const [playerName, setPlayerName] = React.useState<string>('');
-
+  
   const handlePlayerButtonClick = async (playerId: PlayerNumber) => {
     const player: Player = {
       id: playerId,
@@ -34,8 +34,7 @@ export const PlayerSelect: React.FC = () => {
       playerNumber: playerId,
       startTime: Date.now()
     };
-    const createdPlayer = await createPlayer(player, gameId);
-    dispatch(addPlayer(createdPlayer, gameId));
+    dispatch(initializePlayer(player, gameId));
   };
 
   const handleStartGame = (): void => {
@@ -61,6 +60,7 @@ export const PlayerSelect: React.FC = () => {
       <input type='text' name='playerName' onChange={handlePlayerNameChange} value={playerName}></input>
       {renderPlayerButtons()}
       <StartButton onClick={handleStartGame}>START</StartButton>
+      {gameId}
     </div>
   );
 };

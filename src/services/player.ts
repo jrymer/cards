@@ -10,6 +10,6 @@ export const createPlayer = async (player: Player, gameId: string): Promise<Play
             ...player
         }
     });
-
+    // getActivePlayers(gameId);
     return player;
 }

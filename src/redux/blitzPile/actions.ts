@@ -18,7 +18,7 @@ interface NewTopCardAction {
  * @param {Card[]} deck New blitz deck to be intialized
  * @returns {InitializeBlitzDeckAction} A deck with a top card
  */
-export const initializeBlitzDeck = (playerId: any, deck: Card[]): InitializeBlitzDeckAction => {
+export const initializeBlitzDeck = (deck: Card[]): InitializeBlitzDeckAction => {
   return {
     type: INITIALIZE_BLITZ_DECK,
     payload: deck

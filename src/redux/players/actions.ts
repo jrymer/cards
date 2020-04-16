@@ -1,22 +1,16 @@
 import { Player } from 'store/players';
 
 
-export const ADD_PLAYER = '[PLAYERS] ADD_PLAYER';
+export const SET_CURRENT_PLAYER = '[PLAYERS] SET_CURRENT_PLAYER';
 
-interface AddPlayerAction {
-    type: typeof ADD_PLAYER;
-    payload: {
-        gameId: string;
-        player: Player;
-    };
+interface SetCurrentPlayerAction {
+    type: typeof SET_CURRENT_PLAYER;
+    payload: Player;
 }
 
-export const addPlayer = (player: Player, gameId: string): AddPlayerAction => ({
-    type: ADD_PLAYER,
-    payload: {
-        gameId,
-        player
-    }
+export const setCurrentPlayer = (player: Player): SetCurrentPlayerAction => ({
+    type: SET_CURRENT_PLAYER,
+    payload: player
 });
 
-export type PlayerActionTypes = AddPlayerAction;
+export type PlayerActionTypes = SetCurrentPlayerAction;
