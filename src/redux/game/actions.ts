@@ -5,6 +5,7 @@ import { GameResponse } from '.';
 export const INITIALIZE_GAME = '[GAME] INITIALIZE_GAME';
 export const SET_GAME_ID = '[GAME] SET_GAME_ID';
 export const SET_ACTIVE_PLAYERS = '[GAME] SET_ACTIVE_PLAYERS';
+export const SET_PLAYER_ACTIVE = '[GAME] SET_PLAYER_ACTIVE';
 
 interface InitializeGameAction {
     type: typeof INITIALIZE_GAME;
@@ -19,6 +20,11 @@ interface SetActivePlayersAction {
 interface SetGameIdAction {
     type: typeof SET_GAME_ID;
     payload: string;
+}
+
+interface SetPlayerActiveAction {
+    type: typeof SET_PLAYER_ACTIVE;
+    payload: PlayerNumber;
 }
 
 export const initializeGame = (gameResponse: GameResponse): InitializeGameAction => ({
@@ -36,4 +42,9 @@ export const setGameId = (gameId: string): SetGameIdAction => ({
     payload: gameId
 });
 
-export type GameActionTypes = InitializeGameAction | SetActivePlayersAction | SetGameIdAction;
+export const setPlayerActive = (playerId: PlayerNumber): SetPlayerActiveAction => ({
+    type: SET_PLAYER_ACTIVE,
+    payload: playerId
+});
+
+export type GameActionTypes = InitializeGameAction | SetActivePlayersAction | SetGameIdAction | SetPlayerActiveAction;

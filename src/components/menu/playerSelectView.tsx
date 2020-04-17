@@ -3,7 +3,7 @@ import { PlayerNumber } from 'models/playerNumbers';
 import React, { FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { selectGameId } from 'store/game/selectors';
+import { selectActivePlayers, selectGameId } from 'store/game/selectors';
 import { Player } from 'store/players';
 import { initializePlayer } from 'store/players/operations';
 import styled from 'styled-components';
@@ -25,16 +25,20 @@ export const PlayerSelect: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const gameId = useSelector(selectGameId);
+  const activePlayers = useSelector(selectActivePlayers);
   const [playerName, setPlayerName] = React.useState<string>('');
   
+  console.log(activePlayers, 'active playrs in the player component')
   const handlePlayerButtonClick = async (playerId: PlayerNumber) => {
+    const playerNumber = Object.keys(PlayerNumber)[Object.values(PlayerNumber).indexOf(playerId)];
+
     const player: Player = {
       id: playerId,
       name: playerName || playerId,
-      playerNumber: playerId,
+      playerNumber,
       startTime: Date.now()
     };
-    dispatch(initializePlayer(player, gameId));
+    dispatch(initializePlayer(player, gameId, activePlayers));
   };
 
   const handleStartGame = (): void => {
@@ -44,10 +48,13 @@ export const PlayerSelect: React.FC = () => {
 
   const renderPlayerButtons = () => {
     const colorValues = Object.values(CardColorValues);
+    const availablePlayerNames = Object.keys(PlayerNumber).filter((name: PlayerNumber) => !activePlayers.includes(name));
     const playerNames = Object.keys(PlayerNumber);
+    console.log(availablePlayerNames, 'availabLE playernames');
+    console.log(playerNames, 'player names')
 
     return Object.values(PlayerNumber).map((playerName: PlayerNumber, index: number) => (
-      <PlayerButton key={playerName} color={colorValues[index]} onClick={() => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
+      <PlayerButton disabled={!availablePlayerNames.includes(playerNames[index])} key={playerName} color={colorValues[index]} onClick={() => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
     ));
   };
 

@@ -5,8 +5,8 @@ import { WoodPileState } from 'store/woodPile';
 
 export interface Player {
     name: string;
-    id: string;
-    playerNumber: PlayerNumber
+    id: PlayerNumber;
+    playerNumber: string
     startTime: number;
 }
 

@@ -34,6 +34,16 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
                 ...state,
                 gameId: action.payload
             }
+        case gameActions.SET_ACTIVE_PLAYERS:
+            return {
+                ...state,
+                activePlayers: action.payload
+            }
+        case gameActions.SET_PLAYER_ACTIVE:
+            return {
+                ...state,
+                activePlayers: [...state.activePlayers, action.payload]
+            }
         case playerActions.SET_CURRENT_PLAYER:
             return {
                 ...state,

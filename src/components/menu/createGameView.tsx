@@ -1,7 +1,6 @@
 import React, { FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { setGameId } from 'store/game/actions';
-import { createGame } from 'store/game/operations';
+import { createGame, joinGame } from 'store/game/operations';
 import styled from 'styled-components';
 
 const Button = styled.button`
@@ -20,7 +19,7 @@ export const CreateGameView: React.FC = () => {
         dispatch(createGame());
     };
     const handleJoinGame = () => {
-        dispatch(setGameId(id));
+        dispatch(joinGame(id));
     }
 
     return (
