@@ -1,16 +1,18 @@
 import { database } from 'firebase';
+import { GameStates } from 'models/games';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import gameService from 'services/game';
 
-import { initializeGame, setActivePlayers, setGameActive, setGameId } from './actions';
+import { initializeGame, setActivePlayers, setGameActive, setGameId, setGameLobby } from './actions';
 
 export const createGame = () => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
     const { newGame: gameRef, gameResponse } = await gameService.createGame();
 
     gameRef.on('value', (snapshot: any) => {
         handleActivePlayers(snapshot.val(), dispatch);
-    })
+        handleGameState(snapshot.val(), dispatch);
+    });
 
     dispatch(initializeGame(gameResponse));
 }
@@ -19,7 +21,9 @@ export const joinGame = (gameId: string) => async (dispatch: ThunkDispatch<{}, {
     const gameRef = await gameService.connectToGame(gameId);
     gameRef.on('value', (snapshot: database.DataSnapshot) => {
         handleActivePlayers(snapshot.val(), dispatch);
-    })
+        handleGameState(snapshot.val(), dispatch);
+    });
+    dispatch(setGameLobby);
     dispatch(setGameId(gameId));
 };
 
@@ -35,5 +39,12 @@ const handleActivePlayers = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyA
         dispatch(setActivePlayers(activePlayers));
     } else {
         // do other stuff
+    }
+}
+
+const handleGameState = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    const { status } = snapshot;
+    if (status === GameStates.ACTIVE) {
+        dispatch(setGameActive());
     }
 }

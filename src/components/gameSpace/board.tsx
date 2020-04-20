@@ -14,7 +14,6 @@ const BoardContainer = styled.div`
 
 export const Board: React.FC = () => {
   const activePlayers: PlayerNumber[] = useSelector(selectActivePlayers);
-  console.log(activePlayers);
 
   return (
     <BoardContainer>

@@ -9,15 +9,13 @@ import { PlayerSelect } from './playerSelectView';
 export const MenuContainer: React.FC = () => {
   const gameId = useSelector(selectGameId);
 
-  
-
   return (
     <>
-    {
-      gameId
-      ? <PlayerSelect />
-      : <CreateGameView />
-    }
+      {
+        gameId
+          ? <PlayerSelect />
+          : <CreateGameView />
+      }
     </>
   );
 };

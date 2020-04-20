@@ -38,6 +38,11 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
                 ...state,
                 gameId: action.payload
             }
+        case gameActions.SET_GAME_LOBBY:
+            return {
+                ...state,
+                gameState: GameStates.LOBBY
+            };
         case gameActions.SET_GAME_ACTIVE:
             return {
                 ...state,

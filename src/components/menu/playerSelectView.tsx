@@ -1,10 +1,11 @@
 import { CardColorValues } from 'models/card';
+import { GameStates } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
 import React, { FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { startGame } from 'store/game/operations';
-import { selectActivePlayers, selectGameId } from 'store/game/selectors';
+import { selectActivePlayers, selectGameId, selectGameStatus } from 'store/game/selectors';
 import { Player } from 'store/players';
 import { initializePlayer } from 'store/players/operations';
 import styled from 'styled-components';
@@ -26,8 +27,17 @@ export const PlayerSelect: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const gameId = useSelector(selectGameId);
+  const gameState = (useSelector(selectGameStatus));
   const activePlayers = useSelector(selectActivePlayers);
   const [playerName, setPlayerName] = React.useState<string>('');
+
+  // Listen to the game state and if it changes to active go to the board
+  React.useEffect(() => {
+    if (gameState === GameStates.ACTIVE) {
+      // Go to the board
+      history.push(`/${gameId}/board`);
+    }
+  }, [dispatch, gameState]);
   
   const handlePlayerButtonClick = async (playerId: PlayerNumber) => {
     const playerNumber = Object.keys(PlayerNumber)[Object.values(PlayerNumber).indexOf(playerId)];
@@ -43,7 +53,7 @@ export const PlayerSelect: React.FC = () => {
 
   const handleStartGame = (): void => {
     dispatch(startGame(gameId));
-    // history.push(`/${gameId}/board`);
+    history.push(`/${gameId}/board`);
   };
 
   const renderPlayerButtons = () => {
