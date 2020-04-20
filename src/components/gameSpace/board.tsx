@@ -1,7 +1,11 @@
 import { PlayerBoardComponent } from 'components/gameSpace/playPiles/playerBoard';
 import { PlayerNumber } from 'models/playerNumbers';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
+import { selectActivePlayers } from 'store/game/selectors';
 import styled from 'styled-components';
+
+import { DutchPileContainerComponent } from './dutchPile/dutchPileContainer';
 
 const BoardContainer = styled.div`
   display: flex;
@@ -9,9 +13,12 @@ const BoardContainer = styled.div`
 `;
 
 export const Board: React.FC = () => {
+  const activePlayers: PlayerNumber[] = useSelector(selectActivePlayers);
+  console.log(activePlayers);
+
   return (
     <BoardContainer>
-      {/* <DutchPileContainerComponent /> */}
-      <PlayerBoardComponent playerId={PlayerNumber.PLAYER_ONE}/>
+      <PlayerBoardComponent />
+      <DutchPileContainerComponent />
     </BoardContainer>);
 }

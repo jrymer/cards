@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { CardComponent } from '../card';
 
-interface DutchPileProps {
+export interface DutchPileProps {
   activeCard: ActiveCard;
   dutchPile: DutchPile;
   id: string;

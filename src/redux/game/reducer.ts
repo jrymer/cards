@@ -1,5 +1,7 @@
+import { GameStates } from 'models/games';
 import * as blitzPileActions from 'store/blitzPile/actions';
 import { blitzPileReducer } from 'store/blitzPile/reducer';
+import { initialDutchPileState } from 'store/dutchPile/reducer';
 import { GameState } from 'store/game';
 import * as gameActions from 'store/game/actions';
 import * as playerActions from 'store/players/actions';
@@ -12,8 +14,9 @@ import { woodPileReducer } from 'store/woodPile/reducer';
 export const initialGameState: GameState = {
     activePlayers: [],
     gameId: null,
+    gameState: null,
     player: initialPlayersState,
-    dutchPiles: null
+    dutchPiles: initialDutchPileState
 };
 
 type combinedActions = gameActions.GameActionTypes
@@ -27,13 +30,19 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
         case gameActions.INITIALIZE_GAME:
             return {
                 ...state,
-                ...action.payload
+                ...action.payload,
+                gameState: GameStates.LOBBY
             }
         case gameActions.SET_GAME_ID:
             return {
                 ...state,
                 gameId: action.payload
             }
+        case gameActions.SET_GAME_ACTIVE:
+            return {
+                ...state,
+                gameState: GameStates.ACTIVE
+            };
         case gameActions.SET_ACTIVE_PLAYERS:
             return {
                 ...state,

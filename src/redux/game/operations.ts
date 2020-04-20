@@ -3,7 +3,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import gameService from 'services/game';
 
-import { initializeGame, setActivePlayers, setGameId } from './actions';
+import { initializeGame, setActivePlayers, setGameActive, setGameId } from './actions';
 
 export const createGame = () => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
     const { newGame: gameRef, gameResponse } = await gameService.createGame();
@@ -20,8 +20,13 @@ export const joinGame = (gameId: string) => async (dispatch: ThunkDispatch<{}, {
     gameRef.on('value', (snapshot: database.DataSnapshot) => {
         handleActivePlayers(snapshot.val(), dispatch);
     })
-    dispatch(setGameId(gameId))
-}
+    dispatch(setGameId(gameId));
+};
+
+export const startGame = (gameId: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    await gameService.startGame(gameId);
+    dispatch(setGameActive());
+};
 
 const handleActivePlayers = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
     const snapshotKeys = Object.keys(snapshot);

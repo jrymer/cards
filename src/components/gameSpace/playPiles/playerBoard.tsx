@@ -1,4 +1,3 @@
-import { PlayerNumber } from 'models/playerNumbers';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -13,10 +12,9 @@ const PlayerHandContainer = styled.div`
 `;
 
 interface PlayerBoardProps {
-  playerId: PlayerNumber;
 }
 
-export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({playerId}) => {
+export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({}) => {
   // const dispatch = useDispatch();
 
   // const deck = buildDeck();

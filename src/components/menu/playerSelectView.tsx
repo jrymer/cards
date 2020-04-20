@@ -3,6 +3,7 @@ import { PlayerNumber } from 'models/playerNumbers';
 import React, { FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { startGame } from 'store/game/operations';
 import { selectActivePlayers, selectGameId } from 'store/game/selectors';
 import { Player } from 'store/players';
 import { initializePlayer } from 'store/players/operations';
@@ -28,7 +29,6 @@ export const PlayerSelect: React.FC = () => {
   const activePlayers = useSelector(selectActivePlayers);
   const [playerName, setPlayerName] = React.useState<string>('');
   
-  console.log(activePlayers, 'active playrs in the player component')
   const handlePlayerButtonClick = async (playerId: PlayerNumber) => {
     const playerNumber = Object.keys(PlayerNumber)[Object.values(PlayerNumber).indexOf(playerId)];
 
@@ -42,16 +42,14 @@ export const PlayerSelect: React.FC = () => {
   };
 
   const handleStartGame = (): void => {
-    
-    history.push(`/${gameId}/board`);
+    dispatch(startGame(gameId));
+    // history.push(`/${gameId}/board`);
   };
 
   const renderPlayerButtons = () => {
     const colorValues = Object.values(CardColorValues);
     const availablePlayerNames = Object.keys(PlayerNumber).filter((name: PlayerNumber) => !activePlayers.includes(name));
     const playerNames = Object.keys(PlayerNumber);
-    console.log(availablePlayerNames, 'availabLE playernames');
-    console.log(playerNames, 'player names')
 
     return Object.values(PlayerNumber).map((playerName: PlayerNumber, index: number) => (
       <PlayerButton disabled={!availablePlayerNames.includes(playerNames[index])} key={playerName} color={colorValues[index]} onClick={() => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
@@ -66,7 +64,7 @@ export const PlayerSelect: React.FC = () => {
     <div>
       <input type='text' name='playerName' onChange={handlePlayerNameChange} value={playerName}></input>
       {renderPlayerButtons()}
-      <StartButton onClick={handleStartGame}>START</StartButton>
+      <StartButton disabled={activePlayers.length < 2} onClick={handleStartGame}>START</StartButton>
       {gameId}
     </div>
   );
