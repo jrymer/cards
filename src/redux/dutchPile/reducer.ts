@@ -2,6 +2,7 @@ import { DutchPileState } from 'store/dutchPile';
 import * as dutchPileActions from 'store/dutchPile/actions';
 
 export const initialDutchPileState: DutchPileState = {
+  action: null,
   activeCard: null,
   activePiles: null,
   completedPiles: null
@@ -46,7 +47,6 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
       }
     case dutchPileActions.UPDATE_DUTCH_PILES_FROM_FIREBASE: {
       const { dutchPileId, card } = action.payload
-      console.log(action.payload, 'reducer');
       return {
         ...state,
         activePiles: {
@@ -61,6 +61,11 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
         }
       }
     }
+    case dutchPileActions.SET_DUTCH_PILE_ACTION:
+      return {
+        ...state,
+        action: action.payload
+      }
     default:
       return state;
   }

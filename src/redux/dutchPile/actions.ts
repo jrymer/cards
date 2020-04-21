@@ -1,5 +1,5 @@
 import { Card } from 'models/card';
-import { Piles } from 'models/piles';
+import { DutchPileAction, Piles } from 'models/piles';
 
 export const ADD_ACTIVE_CARD_TO_DUTCH_PILE = '[DUTCH] ADD_ACTIVE_CARD_TO_DUTCH_PILE';
 export const CREATE_DUTCH_PILE = '[DUTCH] CREATE_DUTCH_PILE';
@@ -8,6 +8,7 @@ export const SET_ACTIVE_POST_CARD = '[DUTCH] SET_ACTIVE_POST_CARD';
 export const SET_ACTIVE_BLITZ_CARD = '[DUTCH] SET_ACTIVE_BLITZ_CARD';
 export const CLEAR_ACTIVE_CARD = '[DUTCH] CLEAR_ACTIVE_CARD';
 export const UPDATE_DUTCH_PILES_FROM_FIREBASE = '[DUTCH] UPDATE_DUTCH_PILES_FROM_FIREBASE';
+export const SET_DUTCH_PILE_ACTION = '[DUTCH] SET_DUTCH_PILE_ACTION';
 
 interface AddActiveCardToDutchPile {
   type: typeof ADD_ACTIVE_CARD_TO_DUTCH_PILE;
@@ -56,6 +57,11 @@ interface UpdateDutchPilesFromFirebaseAction {
     dutchPileId: string;
     card: Card;
   };
+}
+
+interface SetDutchPileActionAction {
+  type: typeof SET_DUTCH_PILE_ACTION;
+  payload: DutchPileAction;
 }
 
 
@@ -120,10 +126,16 @@ export const updateDutchPilesFromFirebase = (dutchPileId: string, card: Card): U
   }
 });
 
+export const setDutchPileAction = (action: DutchPileAction): SetDutchPileActionAction => ({
+  type: SET_DUTCH_PILE_ACTION,
+  payload: action
+});
+
 export type DutchPileActionTypes = AddActiveCardToDutchPile
 | CreateDutchPile
 | SetActiveBlitzCard
 | SetActivePostCard
 | SetActiveWoodCard
 | ClearActiveCard
-| UpdateDutchPilesFromFirebaseAction;
+| UpdateDutchPilesFromFirebaseAction
+| SetDutchPileActionAction;

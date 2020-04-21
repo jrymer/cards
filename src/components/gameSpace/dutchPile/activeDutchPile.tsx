@@ -1,8 +1,10 @@
 import { Card } from 'models/card';
+import { DutchPileAction } from 'models/piles';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { ActiveCard, DutchPile } from 'store/dutchPile';
-import { addActiveCardToDutchPile, clearActiveCard } from 'store/dutchPile/actions';
+import { clearActiveCard } from 'store/dutchPile/actions';
+import { validDutchPileClick } from 'store/dutchPile/operations';
 import styled from 'styled-components';
 
 import { CardComponent } from '../card';
@@ -11,7 +13,6 @@ export interface DutchPileProps {
   activeCard: ActiveCard;
   dutchPile: DutchPile;
   id: string;
-  handleValidPileClick: () => void;
 }
 
 const ValidDutchPile = styled.div`
@@ -26,14 +27,13 @@ const InvalidDutchPile = styled.div`
   height: 24px;
 `;
 
-export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, dutchPile, id, handleValidPileClick }) => {
+export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, dutchPile, id }) => {
   const dispatch = useDispatch();
   const card: Card = activeCard?.card;
   const topDutchPileCard: Card = Object.values(dutchPile)[Object.keys(dutchPile).length - 1];
 
   const handleValidDutchPileClick = (): void => {
-    dispatch(addActiveCardToDutchPile(id));
-    handleValidPileClick();
+    dispatch(validDutchPileClick(activeCard, DutchPileAction.ADD, id));
   };
 
   const handleInvalidDutchPileClick = (): void => {

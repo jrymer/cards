@@ -13,21 +13,8 @@ const PlayerHandContainer = styled.div`
   border: solid black;
 `;
 
-interface PlayerBoardProps {
-}
-
-export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({ }) => {
-  // const dispatch = useDispatch();
+export const PlayerBoardComponent: React.FC = () => {
   const player = useSelector(selectPlayerState);
-  console.log(player, 'player')
-
-  // const deck = buildDeck();
-  // const blitzDeck = deck.splice(0, 10);
-  // const postDeck = deck.splice(0, 3);
-
-  // dispatch(initializeBlitzDeck(playerId, blitzDeck));
-  // dispatch(initializePostPile(playerId, postDeck));
-  // dispatch(initializeWoodPile(playerId, deck));
 
   return (
     <>

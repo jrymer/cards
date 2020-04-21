@@ -5,19 +5,25 @@ import { newTopBlitzCard } from 'store/blitzPile/actions';
 import { Card } from 'models/card';
 import { topBlitzCardToPostPile } from 'store/postPile/actions';
 import { removeCardFromWoodPile } from 'store/woodPile/actions';
-import { clearActiveCard, createDutchPile } from './actions';
+import { clearActiveCard, createDutchPile, setDutchPileAction, addActiveCardToDutchPile } from './actions';
 import { selectPostPile } from 'store/postPile/selectors';
 import { selectTopCardFromBlitzDeck } from 'store/blitzPile/selectors';
 import { ActiveCard } from '.';
 import gameService from 'services/game';
 
 
-export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: DutchPileAction) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: any) => {
+export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: DutchPileAction, dutchPileId?: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: any) => {
     const gameId = selectGameId(getState());
     const postPileFromState = selectPostPile(getState());
     const topBlitzDeckCard = selectTopCardFromBlitzDeck(getState());
     const card: Card = activeCard?.card;
 
+    if (dutchPileAction === DutchPileAction.ADD) {
+        dispatch(addActiveCardToDutchPile(dutchPileId));
+        await gameService.addCardToDutchPile(activeCard, dutchPileId, gameId);
+    }
+
+    dispatch(setDutchPileAction(dutchPileAction));
     switch (activeCard.pile) {
         case Piles.BLITZ:
             dispatch(newTopBlitzCard());
@@ -37,17 +43,10 @@ export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: Dut
             break;
     }
 
-    switch (dutchPileAction) {
-        case DutchPileAction.ADD:
-        case DutchPileAction.CREATE:
-            const dutchPileId = await gameService.createDutchPile(gameId, activeCard);
-            dispatch(createDutchPile(activeCard.card, dutchPileId));
-            break;
+    if (dutchPileAction === DutchPileAction.CREATE) {
+        const dutchPileId = await gameService.createDutchPile(gameId, activeCard);
+        dispatch(createDutchPile(activeCard.card, dutchPileId));
     }
 
     dispatch(clearActiveCard());
 }
-
-// export const connectToDutchPiles = (gameId: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-//     const dutchPilesRef = await gameService.connectToGame(gameId);
-// }

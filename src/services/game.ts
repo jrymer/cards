@@ -1,5 +1,6 @@
 import { database } from 'firebase';
 import { GameStates } from 'models/games';
+import { DutchPileAction } from 'models/piles';
 import db from 'services/firebase';
 import { ActiveCard } from 'store/dutchPile';
 import { GameResponse } from 'store/game';
@@ -37,6 +38,20 @@ const startGame = async (gameId: string): Promise<database.Reference> => {
     });
 }
 
+const addCardToDutchPile = async (card: ActiveCard, dutchPileId: string, gameId: string) => {
+    const dutchPileRef = db.realtime.ref(`games/${gameId}/dutchPiles/${dutchPileId}`);
+    await dutchPileRef.update({
+        ...card.card
+    });
+    await db.realtime.ref(`games/${gameId}`).update({
+        updatedDutchPiles: {
+            card: card.card,
+            dutchPileAction: DutchPileAction.ADD,
+            dutchPileId,
+        }
+    })
+};
+
 const createDutchPile = async (gameId: string, card: ActiveCard) => {
     const dutchPilesRef = db.realtime.ref(`games/${gameId}/dutchPiles`);
     const dutchPileId = dutchPilesRef.push().key;
@@ -46,8 +61,9 @@ const createDutchPile = async (gameId: string, card: ActiveCard) => {
     });
     await db.realtime.ref(`games/${gameId}`).update({
         updatedDutchPiles: {
-            dutchPileId: dutchPileId,
-            card: card.card
+            card: card.card,
+            dutchPileAction: DutchPileAction.CREATE,
+            dutchPileId: dutchPileId
         }
     });
 
@@ -55,6 +71,7 @@ const createDutchPile = async (gameId: string, card: ActiveCard) => {
 }
 
 export default {
+    addCardToDutchPile,
     createDutchPile,
     connectToGame,
     createGame,

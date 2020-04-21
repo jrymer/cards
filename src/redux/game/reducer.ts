@@ -112,6 +112,7 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
         case dutchPileActions.SET_ACTIVE_BLITZ_CARD:
         case dutchPileActions.CLEAR_ACTIVE_CARD:
         case dutchPileActions.UPDATE_DUTCH_PILES_FROM_FIREBASE:
+        case dutchPileActions.SET_DUTCH_PILE_ACTION:
             return {
                 ...state,
                 dutchPiles: dutchPileReducer(state.dutchPiles, action)

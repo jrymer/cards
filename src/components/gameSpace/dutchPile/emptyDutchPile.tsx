@@ -9,7 +9,6 @@ import styled from 'styled-components';
 
 interface EmptyDutchPileProps {
   activeCard: ActiveCard;
-  handleValidPileClick: () => void;
 }
 
 const ValidEmptyDutchPile = styled.div`
@@ -24,14 +23,11 @@ const InvalidEmptyDutchPile = styled.div`
   height: 24px;
 `;
 
-export const EmptyDutchPileComponent: React.FC<EmptyDutchPileProps> = ({activeCard, handleValidPileClick}) => {
+export const EmptyDutchPileComponent: React.FC<EmptyDutchPileProps> = ({activeCard}) => {
   const dispatch = useDispatch();
 
   const handleValidEmptyDutchPileClick = (): void => {
-    // const { card } = activeCard;
     dispatch(validDutchPileClick(activeCard, DutchPileAction.CREATE));
-    // handleValidPileClick();
-    // dispatch(createDutchPile({ ...card }));
   };
 
   const handleInvalidEmptyDutchPileClick = (): void => {
