@@ -4,6 +4,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { ActiveCard } from 'store/dutchPile';
 import { selectActiveCard, selectActiveDutchPiles } from 'store/dutchPile/selectors';
+import { selectActivePlayers } from 'store/game/selectors';
 import styled from 'styled-components';
 
 const DutchPileContainer = styled.div`
@@ -15,6 +16,7 @@ const DutchPileContainer = styled.div`
 export const DutchPileContainerComponent: React.FC = () => {
   const activeCard: ActiveCard = useSelector(selectActiveCard);
   const dutchPiles = useSelector(selectActiveDutchPiles);
+  const activePlayers = useSelector(selectActivePlayers);
   const dutchPileKeys = dutchPiles ? Object.keys(dutchPiles) : [];
 
   const renderDutchPiles = () => (
@@ -25,7 +27,7 @@ export const DutchPileContainerComponent: React.FC = () => {
 
   return (
     <DutchPileContainer>
-      {dutchPileKeys.length < 4 && <EmptyDutchPileComponent activeCard={activeCard} />}
+      {dutchPileKeys.length < (activePlayers.length * 4) && <EmptyDutchPileComponent activeCard={activeCard} />}
       {dutchPiles && renderDutchPiles()}
     </DutchPileContainer>
   );
