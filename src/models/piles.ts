@@ -3,3 +3,8 @@ export enum Piles {
   BLITZ = 'BLITZ',
   POST = 'POST'
 }
+
+export enum DutchPileAction {
+  ADD = 'ADD',
+  CREATE = 'CREATE'
+}

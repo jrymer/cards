@@ -40,19 +40,19 @@ export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, dutch
     dispatch(clearActiveCard());
   };
 
-  const validDutchPile = (): HTMLElement => (
+  const validDutchPile = () => (
     <ValidDutchPile>
       <CardComponent handleClick={handleValidDutchPileClick} card={{ ...topDutchPileCard }} />
     </ValidDutchPile>
   );
 
-  const invalidDutchPile = (): HTMLElement => (
+  const invalidDutchPile = () => (
     <InvalidDutchPile>
       <CardComponent handleClick={handleInvalidDutchPileClick} card={{ ...topDutchPileCard }} />
     </InvalidDutchPile>
   );
 
-  const renderDutchPile = (): HTMLElement => {
+  const renderDutchPile = () => {
     if (activeCard) {
       if ((topDutchPileCard.color === card.color) && (topDutchPileCard.cardValue + 1 === card.cardValue)) {
         return validDutchPile();

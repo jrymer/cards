@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { selectPlayerState } from 'store/players/selectors';
 import styled from 'styled-components';
 
 import { BlitzDeck } from './blitzDeck';
@@ -14,8 +16,10 @@ const PlayerHandContainer = styled.div`
 interface PlayerBoardProps {
 }
 
-export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({}) => {
+export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({ }) => {
   // const dispatch = useDispatch();
+  const player = useSelector(selectPlayerState);
+  console.log(player, 'player')
 
   // const deck = buildDeck();
   // const blitzDeck = deck.splice(0, 10);
@@ -26,10 +30,15 @@ export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({}) => {
   // dispatch(initializeWoodPile(playerId, deck));
 
   return (
-    <PlayerHandContainer>
-      <BlitzDeck />
-      <PostPile />
-      <WoodPile />
-    </PlayerHandContainer>
+    <>
+      <div>
+        {player.name}
+      </div>
+      <PlayerHandContainer>
+        <BlitzDeck />
+        <PostPile />
+        <WoodPile />
+      </PlayerHandContainer>
+    </>
   );
 }

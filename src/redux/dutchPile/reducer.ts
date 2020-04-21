@@ -1,6 +1,5 @@
 import { DutchPileState } from 'store/dutchPile';
 import * as dutchPileActions from 'store/dutchPile/actions';
-import { uuid } from 'utils/uuid';
 
 export const initialDutchPileState: DutchPileState = {
   activeCard: null,
@@ -8,7 +7,7 @@ export const initialDutchPileState: DutchPileState = {
   completedPiles: null
 };
 
-export const dutchPileReducer = (state = initialDutchPileState, action: dutchPileActions.DutchPileActions): DutchPileState => {
+export const dutchPileReducer = (state = initialDutchPileState, action: dutchPileActions.DutchPileActionTypes): DutchPileState => {
   switch (action.type) {
     case dutchPileActions.SET_ACTIVE_BLITZ_CARD:
     case dutchPileActions.SET_ACTIVE_POST_CARD:
@@ -18,13 +17,12 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
         activeCard: { ...action.payload }
       };
     case dutchPileActions.CREATE_DUTCH_PILE: {
-      const { cardValue } = action.payload;
-      const id = uuid();
+      const { card, dutchPileId } = action.payload;
       return {
         ...state,
         activePiles: {
           ...state.activePiles,
-          [id]: { [cardValue]: action.payload }
+          [dutchPileId]: { [card.cardValue]: card }
         }
       }
     }
@@ -46,6 +44,23 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
         ...state,
         activeCard: null
       }
+    case dutchPileActions.UPDATE_DUTCH_PILES_FROM_FIREBASE: {
+      const { dutchPileId, card } = action.payload
+      console.log(action.payload, 'reducer');
+      return {
+        ...state,
+        activePiles: {
+          ...state.activePiles,
+          [dutchPileId]: {
+            ...state.activePiles[dutchPileId],
+            [card.cardValue]: {
+              ...state.activePiles[dutchPileId][card.cardValue],
+              ...card
+            }
+          }
+        }
+      }
+    }
     default:
       return state;
   }

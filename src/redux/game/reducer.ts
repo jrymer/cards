@@ -1,7 +1,8 @@
 import { GameStates } from 'models/games';
 import * as blitzPileActions from 'store/blitzPile/actions';
 import { blitzPileReducer } from 'store/blitzPile/reducer';
-import { initialDutchPileState } from 'store/dutchPile/reducer';
+import * as dutchPileActions from 'store/dutchPile/actions';
+import { dutchPileReducer, initialDutchPileState } from 'store/dutchPile/reducer';
 import { GameState } from 'store/game';
 import * as gameActions from 'store/game/actions';
 import * as playerActions from 'store/players/actions';
@@ -23,7 +24,8 @@ type combinedActions = gameActions.GameActionTypes
     | playerActions.PlayerActionTypes
     | blitzPileActions.BlitzDeckActionTypes
     | postPileActions.PostPileActionTypes
-    | woodPileActions.WoodPileActionTypes;
+    | woodPileActions.WoodPileActionTypes
+    | dutchPileActions.DutchPileActionTypes;
 
 export const gameReducer = (state = initialGameState, action: combinedActions) => {
     switch (action.type) {
@@ -101,6 +103,18 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
                         woodPile: woodPileReducer(state.player.hand.woodPile, action)
                     }
                 }
+            }
+        case dutchPileActions.ADD_ACTIVE_CARD_TO_DUTCH_PILE:
+
+        case dutchPileActions.CREATE_DUTCH_PILE:
+        case dutchPileActions.SET_ACTIVE_WOOD_CARD:
+        case dutchPileActions.SET_ACTIVE_POST_CARD:
+        case dutchPileActions.SET_ACTIVE_BLITZ_CARD:
+        case dutchPileActions.CLEAR_ACTIVE_CARD:
+        case dutchPileActions.UPDATE_DUTCH_PILES_FROM_FIREBASE:
+            return {
+                ...state,
+                dutchPiles: dutchPileReducer(state.dutchPiles, action)
             }
         default:
             return state;
