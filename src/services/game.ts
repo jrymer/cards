@@ -13,9 +13,9 @@ const createGame = async (): Promise<{ newGame: database.Reference, gameResponse
 
     await newGame.update({
         createdAt: Date.now(),
-        dutchPiles: false,
         players: false,
         status: GameStates.LOBBY,
+        updatedDutchPiles: false
     });
 
     gameRef.onDisconnect().remove();
@@ -37,7 +37,7 @@ const connectToPlayers = async (gameId: string): Promise<database.Reference> => 
     return db.realtime.ref(`games/${gameId}/players`);
 }
 const connectToDutchPiles = async (gameId: string): Promise<database.Reference> => {
-    return db.realtime.ref(`games/${gameId}/dutchPiles`);
+    return db.realtime.ref(`games/${gameId}/updatedDutchPiles`);
 }
 const connectToGameStatus = async (gameId: string): Promise<database.Reference> => {
     return db.realtime.ref(`games/${gameId}/status`);

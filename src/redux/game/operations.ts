@@ -62,32 +62,16 @@ const handleGameUpdates = async (
     const dutchPileRef = await gameService.connectToDutchPiles(gameId);
     const gameStatusRef = await gameService.connectToGameStatus(gameId);
 
-    // let dutchPilesCreated = false;
-    // let activePlayersCreated = false;
+    playerRef.on('value', (snapshot: any) => {
+        console.log('ACTIVE PLAYER CHANGE');
+        handlePlayers(snapshot.val(), dispatch);
+    });
 
-    // gameRef.on('value', (snapshot: any) => {
-    //     console.log(snapshot.val());
-    //     const { updatedDutchPiles, activePlayers } = snapshot.val();
-    //     if (updatedDutchPiles) {
-    //         dutchPilesCreated = true;
-    //     }
-    //     if (activePlayers) {
-    //         activePlayersCreated = true;
-    //     }
-    // });
+    dutchPileRef.on('value', (snapshot: any) => {
+        console.log('DUTCH PILE CHANGE');
+        handleDutchPileUpdates(snapshot.val(), dispatch);
+    });
 
-    // if (activePlayersCreated) {
-        playerRef.on('value', (snapshot: any) => {
-            console.log('ACTIVE PLAYER CHANGE');
-            handlePlayers(snapshot.val(), dispatch);
-        });
-    // }
-    // if (dutchPilesCreated) {
-        dutchPileRef.on('value', (snapshot: any) => {
-            console.log('DUTCH PILE CHANGE');
-            handleDutchPileUpdates(snapshot.val(), dispatch);
-        });
-    // }
 
     gameStatusRef.on('value', (snapshot: any) => {
         console.log('GAME STATUS CHANGE');
@@ -106,40 +90,20 @@ const handleGameUpdates = async (
                 break;
         }
     });
-
-    // gameRef.on('value', (snapshot: any) => {
-    // handlePlayers(snapshot.val(), dispatch);
-    // handleGameState(snapshot.val(), dispatch);
-    // handleDutchPileUpdates(snapshot.val(), dispatch);
-    // if (status === GameStates.NEW_ROUND_LOBBY) {
-    //     dispatch(setGameLobby());
-    //     const { activePlayers, dutchPiles } = snapshot.val();
-    //     handleNextRoundLobbyCreation(activePlayers, dutchPiles, dispatch, gameId, playerState);
-    // }
-    // });
 }
 
 
 const handlePlayers = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    console.log(snapshot, 'snapshot')
     if (snapshot) {
         const activePlayers = Object.keys(snapshot);
         dispatch(setActivePlayers(activePlayers as PlayerNumber[]));
     }
 }
 
-// const handleGameState = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-//     const { status } = snapshot;
-//     if (status === GameStates.ACTIVE) {
-//         dispatch(setGameActive());
-//     }
-// }
-
 const handleDutchPileUpdates = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    const snapshotKeys = Object.keys(snapshot);
-    if (snapshotKeys.includes('updatedDutchPiles')) {
-        const { updatedDutchPiles } = snapshot;
-        const { dutchPileAction, dutchPileId, card } = updatedDutchPiles;
+    console.log(snapshot);
+    if (snapshot) {
+        const { dutchPileAction, dutchPileId, card } = snapshot;
 
         switch (dutchPileAction) {
             case DutchPileAction.ADD:
