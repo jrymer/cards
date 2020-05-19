@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { endRound } from 'store/game/operations';
 import { selectPlayerState } from 'store/players/selectors';
 import styled from 'styled-components';
 
@@ -12,15 +13,23 @@ const PlayerHandContainer = styled.div`
   flex-direction: row;
   border: solid black;
 `;
+const Button = styled.button`
+  border: solid black;
+`;
 
 export const PlayerBoardComponent: React.FC = () => {
+  const dispatch = useDispatch();
   const player = useSelector(selectPlayerState);
+  const handleClick = () => {
+    dispatch(endRound());
+  }
 
   return (
     <>
       <div>
         {player.name}
       </div>
+      <Button onClick={handleClick}>End Game</Button>
       <PlayerHandContainer>
         <BlitzDeck />
         <PostPile />

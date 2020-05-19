@@ -14,10 +14,12 @@ import { woodPileReducer } from 'store/woodPile/reducer';
 
 export const initialGameState: GameState = {
     activePlayers: [],
+    activeRound: 0,
+    dutchPiles: initialDutchPileState,
     gameId: null,
     gameState: null,
     player: initialPlayersState,
-    dutchPiles: initialDutchPileState
+    score: null
 };
 
 type combinedActions = gameActions.GameActionTypes
@@ -34,12 +36,22 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
                 ...state,
                 ...action.payload,
                 gameState: GameStates.LOBBY
-            }
+            };
+        case gameActions.START_NEXT_ROUND:
+            return {
+                ...state,
+                activeRound: state.activeRound + 1
+            };
         case gameActions.SET_GAME_ID:
             return {
                 ...state,
                 gameId: action.payload
-            }
+            };
+        case gameActions.SET_GAME_NEXT_ROUND_LOBBY:
+            return {
+                ...state,
+                gameState: GameStates.NEW_ROUND_LOBBY
+            };
         case gameActions.SET_GAME_LOBBY:
             return {
                 ...state,
@@ -50,6 +62,14 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
                 ...state,
                 gameState: GameStates.ACTIVE
             };
+        case gameActions.SET_SCORE:
+            return {
+                ...state,
+                score: {
+                    ...state.score,
+                    ...action.payload
+                }
+            }
         case gameActions.SET_ACTIVE_PLAYERS:
             return {
                 ...state,

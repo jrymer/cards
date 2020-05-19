@@ -1,9 +1,10 @@
 import { database } from 'firebase';
 import { GameStates } from 'models/games';
 import { DutchPileAction } from 'models/piles';
+import { PlayerNumber } from 'models/playerNumbers';
 import db from 'services/firebase';
 import { ActiveCard } from 'store/dutchPile';
-import { GameResponse } from 'store/game';
+import { GameResponse, GameScore } from 'store/game';
 
 const createGame = async (): Promise<{ newGame: database.Reference, gameResponse: GameResponse }> => {
     const gameRef = db.realtime.ref(`games`);
@@ -12,7 +13,9 @@ const createGame = async (): Promise<{ newGame: database.Reference, gameResponse
 
     await newGame.update({
         createdAt: Date.now(),
-        status: GameStates.LOBBY
+        dutchPiles: false,
+        players: false,
+        status: GameStates.LOBBY,
     });
 
     gameRef.onDisconnect().remove();
@@ -30,18 +33,44 @@ const createGame = async (): Promise<{ newGame: database.Reference, gameResponse
 const connectToGame = async (gameId: string): Promise<database.Reference> => {
     return db.realtime.ref(`games/${gameId}`);
 }
-
+const connectToPlayers = async (gameId: string): Promise<database.Reference> => {
+    return db.realtime.ref(`games/${gameId}/players`);
+}
+const connectToDutchPiles = async (gameId: string): Promise<database.Reference> => {
+    return db.realtime.ref(`games/${gameId}/dutchPiles`);
+}
+const connectToGameStatus = async (gameId: string): Promise<database.Reference> => {
+    return db.realtime.ref(`games/${gameId}/status`);
+}
 const startGame = async (gameId: string): Promise<database.Reference> => {
     return await db.realtime.ref(`games/${gameId}`).update({
         createdAt: Date.now(),
-        status: GameStates.ACTIVE
+        status: GameStates.ACTIVE,
+        round: 1
     });
 }
 
-const addCardToDutchPile = async (card: ActiveCard, dutchPileId: string, gameId: string) => {
+const endGame = async (gameId: string): Promise<void> => {
+
+}
+
+const endRound = async (gameId: string): Promise<void> => {
+    await db.realtime.ref(`games/${gameId}`).update({
+        status: GameStates.NEW_ROUND_LOBBY
+    });
+}
+
+const updateScore = async (gameId: string, score: GameScore): Promise<void> => {
+    await db.realtime.ref(`games/${gameId}`).update({
+        score: score
+    });
+}
+
+const addCardToDutchPile = async (card: ActiveCard, dutchPileId: string, gameId: string, playerId: PlayerNumber) => {
     const dutchPileRef = db.realtime.ref(`games/${gameId}/dutchPiles/${dutchPileId}`);
-    await dutchPileRef.update({
-        ...card.card
+    await dutchPileRef.push({
+        ...card.card,
+        playerId
     });
     await db.realtime.ref(`games/${gameId}`).update({
         updatedDutchPiles: {
@@ -52,12 +81,13 @@ const addCardToDutchPile = async (card: ActiveCard, dutchPileId: string, gameId:
     })
 };
 
-const createDutchPile = async (gameId: string, card: ActiveCard) => {
+const createDutchPile = async (gameId: string, card: ActiveCard, playerId: PlayerNumber) => {
     const dutchPilesRef = db.realtime.ref(`games/${gameId}/dutchPiles`);
     const dutchPileId = dutchPilesRef.push().key;
     const newDutchPileRef = db.realtime.ref(`games/${gameId}/dutchPiles/${dutchPileId}`);
-    await newDutchPileRef.update({
-        ...card.card
+    await newDutchPileRef.push({
+        ...card.card,
+        playerId
     });
     await db.realtime.ref(`games/${gameId}`).update({
         updatedDutchPiles: {
@@ -73,7 +103,13 @@ const createDutchPile = async (gameId: string, card: ActiveCard) => {
 export default {
     addCardToDutchPile,
     createDutchPile,
+    connectToPlayers,
+    connectToDutchPiles,
     connectToGame,
+    connectToGameStatus,
     createGame,
-    startGame
+    endGame,
+    endRound,
+    startGame,
+    updateScore
 };

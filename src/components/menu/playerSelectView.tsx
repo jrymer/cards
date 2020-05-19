@@ -30,7 +30,7 @@ export const PlayerSelect: React.FC = () => {
   const gameState = (useSelector(selectGameStatus));
   const activePlayers = useSelector(selectActivePlayers);
   const [playerName, setPlayerName] = React.useState<string>('');
-
+  console.log(activePlayers);
   // Listen to the game state and if it changes to active go to the board
   React.useEffect(() => {
     if (gameState === GameStates.ACTIVE) {

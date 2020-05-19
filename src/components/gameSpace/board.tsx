@@ -1,8 +1,9 @@
 import { PlayerBoardComponent } from 'components/gameSpace/playPiles/playerBoard';
-import { PlayerNumber } from 'models/playerNumbers';
+import { NextRoundLobby } from 'components/menu/nextRoundLobbyView';
+import { GameStates } from 'models/games';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { selectActivePlayers } from 'store/game/selectors';
+import { selectGameStatus } from 'store/game/selectors';
 import styled from 'styled-components';
 
 import { DutchPileContainerComponent } from './dutchPile/dutchPileContainer';
@@ -13,11 +14,16 @@ const BoardContainer = styled.div`
 `;
 
 export const Board: React.FC = () => {
-  const activePlayers: PlayerNumber[] = useSelector(selectActivePlayers);
+  const gameStatus = useSelector(selectGameStatus);
 
   return (
     <BoardContainer>
-      <PlayerBoardComponent />
-      <DutchPileContainerComponent />
+      {gameStatus === GameStates.ACTIVE
+        ? <>
+          <PlayerBoardComponent />
+          <DutchPileContainerComponent />
+        </>
+        : <NextRoundLobby /> 
+      }
     </BoardContainer>);
 }

@@ -1,5 +1,6 @@
 export enum GameStates {
-    LOBBY = 'LOBBY',
+    LOBBY = 'PRE GAME LOBBY',
+    NEW_ROUND_LOBBY = 'NEW ROUND LOBBY',
     ACTIVE = 'ACTIVE',
     FINISHED = 'FINISHED'
 }
