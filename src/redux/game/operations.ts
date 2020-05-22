@@ -9,7 +9,16 @@ import { createDutchPile, updateDutchPilesFromFirebase } from 'store/dutchPile/a
 import { PlayerState } from 'store/players';
 import { selectPlayerState } from 'store/players/selectors';
 
-import { initializeGame, setActivePlayers, setGameActive, setGameId, setGameLobby, startNextRound } from './actions';
+import { GameScore } from '.';
+import {
+    initializeGame,
+    setActivePlayers,
+    setGameActive,
+    setGameId,
+    setGameLobby,
+    setScore,
+    startNextRound,
+} from './actions';
 import { selectGameId } from './selectors';
 
 export const createGame = () => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: any) => {
@@ -51,16 +60,14 @@ const handleGameUpdates = async (
     const playerRef = await gameService.connectToPlayers(gameId);
     const dutchPileRef = await gameService.connectToDutchPiles(gameId);
     const gameStatusRef = await gameService.connectToGameStatus(gameId);
+    const scoreRef = await gameService.connectToScore(gameId);
     const gameRef = await gameService.connectToGame(gameId);
 
     let firebaseDutchPiles: DutchPiles;
-    let firebasePlayers: PlayerState;
 
     gameRef.on('value', (snapshot: any) => {
-        const { players, dutchPiles } = snapshot.val();
-        if (players) {
-            firebasePlayers = players;
-        }
+        const { dutchPiles } = snapshot.val();
+
         if (dutchPiles) {
             firebaseDutchPiles = dutchPiles;
         }
@@ -73,15 +80,13 @@ const handleGameUpdates = async (
         handleDutchPileUpdates(snapshot.val(), dispatch);
     });
 
-
     gameStatusRef.on('value', (snapshot: any) => {
         const playerState = selectPlayerState(getState());
         const incomingGameState = snapshot.val();
         switch (incomingGameState) {
             case GameStates.NEW_ROUND_LOBBY:
                 dispatch(setGameLobby());
-                const activePlayers = Object.keys(firebasePlayers);
-                handleNextRoundLobbyCreation(activePlayers as PlayerNumber[], firebaseDutchPiles, dispatch, gameId, playerState);
+                handleNextRoundLobbyCreation(firebaseDutchPiles, gameId, playerState);
                 break;
             case GameStates.ACTIVE:
                 dispatch(setGameActive());
@@ -89,6 +94,10 @@ const handleGameUpdates = async (
             default:
                 break;
         }
+    });
+
+    scoreRef.on('value', (snapshot: any) => {
+        handleScoreUpdates(snapshot.val(), dispatch);
     });
 }
 
@@ -118,9 +127,7 @@ const handleDutchPileUpdates = (dutchPiles: UpdatedDutchPile, dispatch: ThunkDis
 }
 
 const handleNextRoundLobbyCreation = (
-    activePlayers: PlayerNumber[],
     dutchPiles: DutchPiles,
-    dispatch: ThunkDispatch<{}, {}, AnyAction>,
     gameId: string,
     playerState: PlayerState
 ) => {
@@ -128,10 +135,6 @@ const handleNextRoundLobbyCreation = (
     const { hand, id } = playerState;
     const blitzDeckLength = hand.blitzPile?.blitzDeck.length;
     let score = 0;
-    // const playerMap: GameScore = {};
-    // activePlayers.forEach((playerId: PlayerNumber) => {
-    //     playerMap[playerId] = 0;
-    // })
 
     Object.keys(dutchPiles).forEach((key: string) => {
         Object.values(dutchPiles[key]).forEach((dutchPile: FirebaseDutchPile) => {
@@ -142,6 +145,10 @@ const handleNextRoundLobbyCreation = (
     });
     score = score - (blitzDeckLength * 2);
     console.log(score, 'after')
-    // dispatch(setScore(playerMap));
     gameService.updateScore(gameId, id, score);
 };
+
+const handleScoreUpdates = (scoreMap: GameScore, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    console.log(scoreMap, 'scoremap');
+    dispatch(setScore(scoreMap));
+}

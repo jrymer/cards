@@ -42,6 +42,9 @@ const connectToDutchPiles = async (gameId: string): Promise<database.Reference> 
 const connectToGameStatus = async (gameId: string): Promise<database.Reference> => {
     return db.realtime.ref(`games/${gameId}/status`);
 }
+const connectToScore = async (gameId: string): Promise<database.Reference> => {
+    return db.realtime.ref(`games/${gameId}/score`);
+}
 const startGame = async (gameId: string): Promise<database.Reference> => {
     return await db.realtime.ref(`games/${gameId}`).update({
         createdAt: Date.now(),
@@ -107,6 +110,7 @@ export default {
     connectToDutchPiles,
     connectToGame,
     connectToGameStatus,
+    connectToScore,
     createGame,
     endGame,
     endRound,
