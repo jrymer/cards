@@ -4,7 +4,7 @@ import { DutchPileAction } from 'models/piles';
 import { PlayerNumber } from 'models/playerNumbers';
 import db from 'services/firebase';
 import { ActiveCard } from 'store/dutchPile';
-import { GameResponse, GameScore } from 'store/game';
+import { GameResponse } from 'store/game';
 
 const createGame = async (): Promise<{ newGame: database.Reference, gameResponse: GameResponse }> => {
     const gameRef = db.realtime.ref(`games`);
@@ -60,9 +60,9 @@ const endRound = async (gameId: string): Promise<void> => {
     });
 }
 
-const updateScore = async (gameId: string, score: GameScore): Promise<void> => {
-    await db.realtime.ref(`games/${gameId}`).update({
-        score: score
+const updateScore = async (gameId: string, playerId: PlayerNumber, score: number): Promise<void> => {
+    await db.realtime.ref(`games/${gameId}`).child('score').update({
+        [playerId]: score
     });
 }
 

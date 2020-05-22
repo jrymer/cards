@@ -11,7 +11,7 @@ import { Player } from '.';
 import { setCurrentPlayer } from './actions';
 
 export const initializePlayer = (player: Player, gameId: string, activePlayers: PlayerNumber[]) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    const createdPlayer = await createPlayer(player, gameId, activePlayers);
+    const createdPlayer = await createPlayer(player, gameId);
     
     const deck = buildDeck();
     const blitzDeck = deck.splice(0, 10);

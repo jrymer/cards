@@ -4,29 +4,19 @@ import { PlayerNumber } from 'models/playerNumbers';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import gameService from 'services/game';
-import { DutchPiles, FirebaseDutchPile } from 'store/dutchPile';
+import { DutchPiles, FirebaseDutchPile, UpdatedDutchPile } from 'store/dutchPile';
 import { createDutchPile, updateDutchPilesFromFirebase } from 'store/dutchPile/actions';
 import { PlayerState } from 'store/players';
 import { selectPlayerState } from 'store/players/selectors';
 
-import { GameScore } from '.';
-import {
-    initializeGame,
-    setActivePlayers,
-    setGameActive,
-    setGameId,
-    setGameLobby,
-    setScore,
-    startNextRound,
-} from './actions';
+import { initializeGame, setActivePlayers, setGameActive, setGameId, setGameLobby, startNextRound } from './actions';
 import { selectGameId } from './selectors';
 
 export const createGame = () => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: any) => {
     const { gameResponse } = await gameService.createGame();
-
-    handleGameUpdates(dispatch, gameResponse.gameId, getState);
-
+    dispatch(setGameLobby());
     dispatch(initializeGame(gameResponse));
+    handleGameUpdates(dispatch, gameResponse.gameId, getState);
 }
 
 export const joinGame = (gameId: string) => (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: any) => {
@@ -61,27 +51,37 @@ const handleGameUpdates = async (
     const playerRef = await gameService.connectToPlayers(gameId);
     const dutchPileRef = await gameService.connectToDutchPiles(gameId);
     const gameStatusRef = await gameService.connectToGameStatus(gameId);
+    const gameRef = await gameService.connectToGame(gameId);
 
+    let firebaseDutchPiles: DutchPiles;
+    let firebasePlayers: PlayerState;
+
+    gameRef.on('value', (snapshot: any) => {
+        const { players, dutchPiles } = snapshot.val();
+        if (players) {
+            firebasePlayers = players;
+        }
+        if (dutchPiles) {
+            firebaseDutchPiles = dutchPiles;
+        }
+    });
     playerRef.on('value', (snapshot: any) => {
-        console.log('ACTIVE PLAYER CHANGE');
         handlePlayers(snapshot.val(), dispatch);
     });
 
     dutchPileRef.on('value', (snapshot: any) => {
-        console.log('DUTCH PILE CHANGE');
         handleDutchPileUpdates(snapshot.val(), dispatch);
     });
 
 
     gameStatusRef.on('value', (snapshot: any) => {
-        console.log('GAME STATUS CHANGE');
         const playerState = selectPlayerState(getState());
-        const status = snapshot.val();
-        switch (status) {
+        const incomingGameState = snapshot.val();
+        switch (incomingGameState) {
             case GameStates.NEW_ROUND_LOBBY:
                 dispatch(setGameLobby());
-                const { activePlayers, dutchPiles } = snapshot.val();
-                handleNextRoundLobbyCreation(activePlayers, dutchPiles, dispatch, gameId, playerState);
+                const activePlayers = Object.keys(firebasePlayers);
+                handleNextRoundLobbyCreation(activePlayers as PlayerNumber[], firebaseDutchPiles, dispatch, gameId, playerState);
                 break;
             case GameStates.ACTIVE:
                 dispatch(setGameActive());
@@ -100,10 +100,9 @@ const handlePlayers = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>
     }
 }
 
-const handleDutchPileUpdates = (snapshot: any, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    console.log(snapshot);
-    if (snapshot) {
-        const { dutchPileAction, dutchPileId, card } = snapshot;
+const handleDutchPileUpdates = (dutchPiles: UpdatedDutchPile, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    if (dutchPiles) {
+        const { dutchPileAction, dutchPileId, card } = dutchPiles;
 
         switch (dutchPileAction) {
             case DutchPileAction.ADD:
@@ -128,18 +127,21 @@ const handleNextRoundLobbyCreation = (
     console.log(gameId, 'game id to update the score with')
     const { hand, id } = playerState;
     const blitzDeckLength = hand.blitzPile?.blitzDeck.length;
-    const playerMap: GameScore = {};
-    activePlayers.forEach((playerId: PlayerNumber) => {
-        playerMap[playerId] = 0;
-    })
+    let score = 0;
+    // const playerMap: GameScore = {};
+    // activePlayers.forEach((playerId: PlayerNumber) => {
+    //     playerMap[playerId] = 0;
+    // })
 
     Object.keys(dutchPiles).forEach((key: string) => {
         Object.values(dutchPiles[key]).forEach((dutchPile: FirebaseDutchPile) => {
-            playerMap[dutchPile.playerId]++
+            if (dutchPile.playerId === id) {
+                score++;
+            }
         });
     });
-    playerMap[id] = playerMap[id] - (blitzDeckLength * 2);
-    console.log(playerMap, 'after')
-    dispatch(setScore(playerMap));
-    // gameService.updateScore(gameId, playerMap);
+    score = score - (blitzDeckLength * 2);
+    console.log(score, 'after')
+    // dispatch(setScore(playerMap));
+    gameService.updateScore(gameId, id, score);
 };

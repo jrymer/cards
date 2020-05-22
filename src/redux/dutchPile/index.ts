@@ -15,6 +15,11 @@ export interface DutchPile {
 export interface FirebaseDutchPile extends DutchPile{
   playerId: PlayerNumber;
 }
+export interface UpdatedDutchPile {
+  card: Card;
+  dutchPileAction: DutchPileAction;
+  dutchPileId: string;
+}
 export interface ActiveCard {
   card: Card;
   pile: Piles;

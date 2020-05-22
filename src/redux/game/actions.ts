@@ -5,7 +5,7 @@ import { GameResponse, GameScore } from '.';
 export const INITIALIZE_GAME = '[GAME] INITIALIZE_GAME';
 export const START_NEXT_ROUND = '[GAME] START_NEXT_ROUND';
 export const SET_GAME_ID = '[GAME] SET_GAME_ID';
-export const SET_GAME_LOBBY = '[GAME] SET_GAME_LOBBY';
+export const SET_GAME_LOBBY = '[GAME] SET_PRE_GAME_LOBBY';
 export const SET_GAME_NEXT_ROUND_LOBBY = '[GAME] SET_GAME_NEXT_ROUND_LOBBY';
 export const SET_GAME_ACTIVE = '[GAME] SET_GAME_ACTIVE';
 export const SET_ACTIVE_PLAYERS = '[GAME] SET_ACTIVE_PLAYERS';

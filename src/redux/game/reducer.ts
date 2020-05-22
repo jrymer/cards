@@ -17,7 +17,7 @@ export const initialGameState: GameState = {
     activeRound: 0,
     dutchPiles: initialDutchPileState,
     gameId: null,
-    gameState: null,
+    gameState: GameStates.INACTIVE,
     player: initialPlayersState,
     score: null
 };
@@ -34,8 +34,7 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
         case gameActions.INITIALIZE_GAME:
             return {
                 ...state,
-                ...action.payload,
-                gameState: GameStates.LOBBY
+                ...action.payload
             };
         case gameActions.START_NEXT_ROUND:
             return {
