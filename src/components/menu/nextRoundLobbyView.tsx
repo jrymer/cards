@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { GameScore } from 'store/game';
 import { selectGameScore } from 'store/game/selectors';
 import styled from 'styled-components';
 
@@ -9,19 +10,23 @@ const StartButton = styled.button`
 `;
 
 export const NextRoundLobby: React.FC = () => {
-    const score = useSelector(selectGameScore);
+    const gameScore: GameScore = useSelector(selectGameScore);
 
     const handleStartNextRound = () => {
 
     };
 
     const renderScore = () => {
-        if (score) {
-            return Object.keys(score).map((playerId: string) => (
-                <div key={playerId}>
-                    {playerId}: {score[playerId]}
-                </div>
-            ));
+        if (gameScore) {
+            console.log(gameScore)
+            return Object.keys(gameScore).map((playerId: string) => {
+                const { name, score } = gameScore[playerId];
+                return (
+                    <div key={playerId}>
+                        {name}: {score}
+                    </div>
+                );
+            });
         }
     }
 

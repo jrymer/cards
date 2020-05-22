@@ -132,7 +132,7 @@ const handleNextRoundLobbyCreation = (
     playerState: PlayerState
 ) => {
     console.log(gameId, 'game id to update the score with')
-    const { hand, id } = playerState;
+    const { hand, id, name } = playerState;
     const blitzDeckLength = hand.blitzPile?.blitzDeck.length;
     let score = 0;
 
@@ -144,11 +144,9 @@ const handleNextRoundLobbyCreation = (
         });
     });
     score = score - (blitzDeckLength * 2);
-    console.log(score, 'after')
-    gameService.updateScore(gameId, id, score);
+    gameService.updateScore(gameId, id, name, score);
 };
 
 const handleScoreUpdates = (scoreMap: GameScore, dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    console.log(scoreMap, 'scoremap');
     dispatch(setScore(scoreMap));
 }

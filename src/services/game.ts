@@ -63,9 +63,12 @@ const endRound = async (gameId: string): Promise<void> => {
     });
 }
 
-const updateScore = async (gameId: string, playerId: PlayerNumber, score: number): Promise<void> => {
+const updateScore = async (gameId: string, playerId: PlayerNumber, name: string, score: number): Promise<void> => {
     await db.realtime.ref(`games/${gameId}`).child('score').update({
-        [playerId]: score
+        [playerId]: {
+            name,
+            score
+        }
     });
 }
 

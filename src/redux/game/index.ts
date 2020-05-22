@@ -4,7 +4,10 @@ import { DutchPileState } from 'store/dutchPile';
 import { PlayerState } from 'store/players';
 
 export interface GameScore {
-    [key: string]: number;
+    [key: string]: {
+        name: string;
+        score: number;
+    };
 }
 
 export interface GameResponse {
