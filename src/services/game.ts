@@ -53,6 +53,16 @@ const startGame = async (gameId: string): Promise<database.Reference> => {
     });
 }
 
+const startNewRound = async (gameId: string) => {
+    const gameRef = db.realtime.ref(`games/${gameId}`);
+
+    await gameRef.update({
+        dutchPiles: {},
+        status: GameStates.ACTIVE,
+        updatedDutchPiles: {}
+    });
+}
+
 const endGame = async (gameId: string): Promise<void> => {
 
 }
@@ -118,5 +128,6 @@ export default {
     endGame,
     endRound,
     startGame,
+    startNewRound,
     updateScore
 };

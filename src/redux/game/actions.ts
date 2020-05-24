@@ -3,7 +3,7 @@ import { PlayerNumber } from 'models/playerNumbers';
 import { GameResponse, GameScore } from '.';
 
 export const INITIALIZE_GAME = '[GAME] INITIALIZE_GAME';
-export const START_NEXT_ROUND = '[GAME] START_NEXT_ROUND';
+export const BUMP_ROUND = '[GAME] BUMP_ROUND';
 export const SET_GAME_ID = '[GAME] SET_GAME_ID';
 export const SET_GAME_LOBBY = '[GAME] SET_PRE_GAME_LOBBY';
 export const SET_GAME_NEXT_ROUND_LOBBY = '[GAME] SET_GAME_NEXT_ROUND_LOBBY';
@@ -44,8 +44,8 @@ interface SetGameNextRoundLobbyAction {
     type: typeof SET_GAME_NEXT_ROUND_LOBBY;
 }
 
-interface StartNextRoundAction {
-    type: typeof START_NEXT_ROUND;
+interface BumpRoundAction {
+    type: typeof BUMP_ROUND;
 }
 
 interface SetScoreAction {
@@ -85,8 +85,8 @@ export const setGameNextRoundLobby = (): SetGameNextRoundLobbyAction => ({
     type: SET_GAME_NEXT_ROUND_LOBBY
 });
 
-export const startNextRound = (): StartNextRoundAction => ({
-    type: START_NEXT_ROUND
+export const bumpRoundNumber = (): BumpRoundAction => ({
+    type: BUMP_ROUND
 });
 
 export const setScore = (score: GameScore): SetScoreAction => ({
@@ -102,5 +102,5 @@ export type GameActionTypes = InitializeGameAction
     | SetGameActiveAction
     | SetGameLobbyAction
     | SetGameNextRoundLobbyAction
-    | StartNextRoundAction
+    | BumpRoundAction
     | SetScoreAction;

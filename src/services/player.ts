@@ -10,7 +10,10 @@ export const createPlayer = async (player: Player, gameId: string): Promise<Play
         }
     });
     await gameRef.child('score').update({
-        [player.id]: 0
+        [player.id]: {
+            score: 0,
+            name: player.name
+        }
     });
 
     return player;

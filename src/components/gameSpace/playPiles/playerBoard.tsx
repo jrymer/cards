@@ -20,7 +20,8 @@ const Button = styled.button`
 export const PlayerBoardComponent: React.FC = () => {
   const dispatch = useDispatch();
   const player = useSelector(selectPlayerState);
-  const handleClick = () => {
+  
+  const handleEndRound = () => {
     dispatch(endRound());
   }
 
@@ -29,7 +30,7 @@ export const PlayerBoardComponent: React.FC = () => {
       <div>
         {player.name}
       </div>
-      <Button onClick={handleClick}>End Game</Button>
+      <Button onClick={handleEndRound}>End Round</Button>
       <PlayerHandContainer>
         <BlitzDeck />
         <PostPile />

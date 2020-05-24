@@ -1,6 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GameScore } from 'store/game';
+import { startNewRound } from 'store/game/operations';
 import { selectGameScore } from 'store/game/selectors';
 import styled from 'styled-components';
 
@@ -11,14 +12,14 @@ const StartButton = styled.button`
 
 export const NextRoundLobby: React.FC = () => {
     const gameScore: GameScore = useSelector(selectGameScore);
+    const dispatch = useDispatch();
 
     const handleStartNextRound = () => {
-
+        dispatch(startNewRound());
     };
 
     const renderScore = () => {
         if (gameScore) {
-            console.log(gameScore)
             return Object.keys(gameScore).map((playerId: string) => {
                 const { name, score } = gameScore[playerId];
                 return (

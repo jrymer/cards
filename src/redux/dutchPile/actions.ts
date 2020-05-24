@@ -7,6 +7,7 @@ export const SET_ACTIVE_WOOD_CARD = '[DUTCH] SET_ACTIVE_WOOD_CARD';
 export const SET_ACTIVE_POST_CARD = '[DUTCH] SET_ACTIVE_POST_CARD';
 export const SET_ACTIVE_BLITZ_CARD = '[DUTCH] SET_ACTIVE_BLITZ_CARD';
 export const CLEAR_ACTIVE_CARD = '[DUTCH] CLEAR_ACTIVE_CARD';
+export const RESET_DUTCH_PILES = '[DUTCH] RESET_DUTCH_PILES';
 export const UPDATE_DUTCH_PILES_FROM_FIREBASE = '[DUTCH] UPDATE_DUTCH_PILES_FROM_FIREBASE';
 export const SET_DUTCH_PILE_ACTION = '[DUTCH] SET_DUTCH_PILE_ACTION';
 
@@ -62,6 +63,10 @@ interface UpdateDutchPilesFromFirebaseAction {
 interface SetDutchPileActionAction {
   type: typeof SET_DUTCH_PILE_ACTION;
   payload: DutchPileAction;
+}
+
+interface ResetDutchPilesAction {
+  type: typeof RESET_DUTCH_PILES;
 }
 
 
@@ -131,6 +136,10 @@ export const setDutchPileAction = (action: DutchPileAction): SetDutchPileActionA
   payload: action
 });
 
+export const resetDutchPiles = (): ResetDutchPilesAction => ({
+  type: RESET_DUTCH_PILES
+});
+
 export type DutchPileActionTypes = AddActiveCardToDutchPile
 | CreateDutchPile
 | SetActiveBlitzCard
@@ -138,4 +147,5 @@ export type DutchPileActionTypes = AddActiveCardToDutchPile
 | SetActiveWoodCard
 | ClearActiveCard
 | UpdateDutchPilesFromFirebaseAction
+| ResetDutchPilesAction
 | SetDutchPileActionAction;

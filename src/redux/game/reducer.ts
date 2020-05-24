@@ -36,7 +36,7 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
                 ...state,
                 ...action.payload
             };
-        case gameActions.START_NEXT_ROUND:
+        case gameActions.BUMP_ROUND:
             return {
                 ...state,
                 activeRound: state.activeRound + 1
@@ -132,6 +132,7 @@ export const gameReducer = (state = initialGameState, action: combinedActions) =
         case dutchPileActions.CLEAR_ACTIVE_CARD:
         case dutchPileActions.UPDATE_DUTCH_PILES_FROM_FIREBASE:
         case dutchPileActions.SET_DUTCH_PILE_ACTION:
+        case dutchPileActions.RESET_DUTCH_PILES:
             return {
                 ...state,
                 dutchPiles: dutchPileReducer(state.dutchPiles, action)

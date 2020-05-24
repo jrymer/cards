@@ -66,6 +66,10 @@ export const dutchPileReducer = (state = initialDutchPileState, action: dutchPil
         ...state,
         action: action.payload
       }
+    case dutchPileActions.RESET_DUTCH_PILES:
+      return {
+        ...initialDutchPileState
+      }
     default:
       return state;
   }
