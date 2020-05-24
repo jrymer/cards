@@ -1,10 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { initializeBlitzDeck } from 'store/blitzPile/actions';
-import { initializePostPile } from 'store/postPile/actions';
-import { initializeWoodPile } from 'store/woodPile/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { endRound } from 'store/game/operations';
+import { selectPlayerState } from 'store/players/selectors';
 import styled from 'styled-components';
-import { buildDeck } from 'utils/deckFunctions';
 
 import { BlitzDeck } from './blitzDeck';
 import { PostPile } from './postPile';
@@ -15,27 +13,29 @@ const PlayerHandContainer = styled.div`
   flex-direction: row;
   border: solid black;
 `;
+const Button = styled.button`
+  border: solid black;
+`;
 
-interface PlayerBoardProps {
-  playerId: Players;
-}
-
-export const PlayerBoardComponent: React.FC<PlayerBoardProps> = ({playerId}) => {
+export const PlayerBoardComponent: React.FC = () => {
   const dispatch = useDispatch();
-
-  const deck = buildDeck();
-  const blitzDeck = deck.splice(0, 10);
-  const postDeck = deck.splice(0, 3);
-
-  dispatch(initializeBlitzDeck(playerId, blitzDeck));
-  dispatch(initializePostPile(playerId, postDeck));
-  dispatch(initializeWoodPile(playerId, deck));
+  const player = useSelector(selectPlayerState);
+  
+  const handleEndRound = () => {
+    dispatch(endRound());
+  }
 
   return (
-    <PlayerHandContainer>
-      <BlitzDeck />
-      <PostPile />
-      <WoodPile />
-    </PlayerHandContainer>
+    <>
+      <div>
+        {player.name}
+      </div>
+      <Button onClick={handleEndRound}>End Round</Button>
+      <PlayerHandContainer>
+        <BlitzDeck />
+        <PostPile />
+        <WoodPile />
+      </PlayerHandContainer>
+    </>
   );
 }

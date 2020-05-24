@@ -1,10 +1,13 @@
 import { CardColorValues } from 'models/card';
+import { GameStates } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { FormEvent } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { startGame } from 'store/game/operations';
+import { selectActivePlayers, selectGameId, selectGameStatus } from 'store/game/selectors';
 import { Player } from 'store/players';
-import { addPlayer } from 'store/players/actions';
+import { initializePlayer } from 'store/players/operations';
 import styled from 'styled-components';
 
 interface PlayerButtonProps {
@@ -23,42 +26,56 @@ const StartButton = styled.button`
 export const PlayerSelect: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { gameId } = useParams();
+  const gameId = useSelector(selectGameId);
+  const gameState = (useSelector(selectGameStatus));
+  const activePlayers = useSelector(selectActivePlayers);
+  const [playerName, setPlayerName] = React.useState<string>('');
 
-  const handlePlayerButtonClick = (playerId: PlayerNumber): void => {
+  // Listen to the game state and if it changes to active go to the board
+  React.useEffect(() => {
+    if (gameState === GameStates.ACTIVE) {
+      // Go to the board
+      history.push(`/${gameId}/board`);
+    }
+  }, [dispatch, gameState]);
+  
+  const handlePlayerButtonClick = async (playerId: PlayerNumber) => {
+    const playerNumber = Object.keys(PlayerNumber)[Object.values(PlayerNumber).indexOf(playerId)];
+
     const player: Player = {
       id: playerId,
-      name: 'name',
-      playerNumber: playerId,
-      startTime: new Date()
+      name: playerName || playerId,
+      playerNumber,
+      startTime: Date.now()
     };
-
-    if (playerId === PlayerNumber.BOT) {
-      localStorage.setItem(PlayerNumber.BOT, JSON.stringify(player));
-    } else {
-      dispatch(addPlayer(player, gameId));
-    }
+    dispatch(initializePlayer(player, gameId, activePlayers));
   };
 
   const handleStartGame = (): void => {
-    console.log(gameId);
+    dispatch(startGame(gameId));
     history.push(`/${gameId}/board`);
   };
 
   const renderPlayerButtons = () => {
     const colorValues = Object.values(CardColorValues);
+    const availablePlayerNames = Object.keys(PlayerNumber).filter((name: PlayerNumber) => !activePlayers.includes(name));
     const playerNames = Object.keys(PlayerNumber);
 
     return Object.values(PlayerNumber).map((playerName: PlayerNumber, index: number) => (
-      <PlayerButton key={playerName} color={colorValues[index]} onClick={(): void => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
+      <PlayerButton disabled={!availablePlayerNames.includes(playerNames[index])} key={playerName} color={colorValues[index]} onClick={() => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
     ));
   };
 
+  const handlePlayerNameChange = (event: FormEvent<HTMLInputElement>): void => {
+    setPlayerName(event.currentTarget.value);
+  }
+
   return (
     <div>
-      menu
+      <input type='text' name='playerName' onChange={handlePlayerNameChange} value={playerName}></input>
       {renderPlayerButtons()}
-      <StartButton onClick={handleStartGame}>START</StartButton>
+      <StartButton disabled={activePlayers.length < 2} onClick={handleStartGame}>START</StartButton>
+      {gameId}
     </div>
   );
 };

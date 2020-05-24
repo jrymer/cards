@@ -5,20 +5,17 @@ import { WoodPileState } from 'store/woodPile';
 
 export interface Player {
     name: string;
-    id: string;
-    playerNumber: PlayerNumber
-    startTime: Date;
+    id: PlayerNumber;
+    playerNumber: string
+    startTime: number;
 }
 
 export interface HandState {
-    blitzPile: BlitzPileState,
-    postPile: PostPileState,
-    woodPile: WoodPileState
+    blitzPile: BlitzPileState;
+    postPile: PostPileState;
+    woodPile: WoodPileState;
 }
 
-export interface PlayerState {
-    [key: string]: {
-        player: Player,
-        hand: HandState
-    }
+export interface PlayerState extends Player {
+    hand: HandState;
 }

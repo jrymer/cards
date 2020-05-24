@@ -1,27 +1,32 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import gameService from 'services/game';
-import { initializeGame } from 'store/game/actions';
+import { selectGameId } from 'store/game/selectors';
 import styled from 'styled-components';
 
-const CreateGameButton = styled.button`
+import { CreateGameView } from './createGameView';
+import { PlayerSelect } from './playerSelectView';
+
+const Button = styled.button`
   border: solid black;
 `;
 
 export const MenuContainer: React.FC = () => {
+  const gameId = useSelector(selectGameId);
   const history = useHistory();
-  const dispatch = useDispatch();
 
-  const handleCreateGame = async () => {
-    const gameId = await gameService.createGame();
-    dispatch(initializeGame(gameId));
-    history.push(`/${gameId}/players`);
-  };
+  const handleReturnToMenu = () => {
+    history.push(`/`)
+  }
 
   return (
     <>
-      <CreateGameButton onClick={handleCreateGame}>Create Game</CreateGameButton>
+      {
+        gameId
+          ? <PlayerSelect />
+          : <CreateGameView />
+      }
+      <Button onClick={handleReturnToMenu}>Return to Menu</Button>
     </>
   );
 };

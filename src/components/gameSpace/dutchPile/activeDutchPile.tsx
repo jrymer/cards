@@ -1,17 +1,18 @@
 import { Card } from 'models/card';
+import { DutchPileAction } from 'models/piles';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { ActiveCard, DutchPile } from 'store/dutchPile';
-import { addActiveCardToDutchPile, clearActiveCard } from 'store/dutchPile/actions';
+import { clearActiveCard } from 'store/dutchPile/actions';
+import { validDutchPileClick } from 'store/dutchPile/operations';
 import styled from 'styled-components';
 
 import { CardComponent } from '../card';
 
-interface DutchPileProps {
+export interface DutchPileProps {
   activeCard: ActiveCard;
   dutchPile: DutchPile;
   id: string;
-  handleValidPileClick: () => void;
 }
 
 const ValidDutchPile = styled.div`
@@ -26,33 +27,32 @@ const InvalidDutchPile = styled.div`
   height: 24px;
 `;
 
-export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, dutchPile, id, handleValidPileClick }) => {
+export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, dutchPile, id }) => {
   const dispatch = useDispatch();
   const card: Card = activeCard?.card;
   const topDutchPileCard: Card = Object.values(dutchPile)[Object.keys(dutchPile).length - 1];
 
   const handleValidDutchPileClick = (): void => {
-    dispatch(addActiveCardToDutchPile(id));
-    handleValidPileClick();
+    dispatch(validDutchPileClick(activeCard, DutchPileAction.ADD, id));
   };
 
   const handleInvalidDutchPileClick = (): void => {
     dispatch(clearActiveCard());
   };
 
-  const validDutchPile = (): HTMLElement => (
+  const validDutchPile = () => (
     <ValidDutchPile>
       <CardComponent handleClick={handleValidDutchPileClick} card={{ ...topDutchPileCard }} />
     </ValidDutchPile>
   );
 
-  const invalidDutchPile = (): HTMLElement => (
+  const invalidDutchPile = () => (
     <InvalidDutchPile>
       <CardComponent handleClick={handleInvalidDutchPileClick} card={{ ...topDutchPileCard }} />
     </InvalidDutchPile>
   );
 
-  const renderDutchPile = (): HTMLElement => {
+  const renderDutchPile = () => {
     if (activeCard) {
       if ((topDutchPileCard.color === card.color) && (topDutchPileCard.cardValue + 1 === card.cardValue)) {
         return validDutchPile();
