@@ -47,7 +47,7 @@
     "@types/styled-components": "^5.0.1",
     "firebase": "^7.14.0",
     "install": "^0.13.0",
-    "npm": "^6.14.2",
+    "npm": "^6.14.6",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-redux": "^7.2.0",
