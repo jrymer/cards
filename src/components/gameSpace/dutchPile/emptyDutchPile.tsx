@@ -1,9 +1,10 @@
 import { DutchPileAction } from 'models/piles';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { ActiveCard } from 'store/dutchPile';
-import { clearActiveCard } from 'store/dutchPile/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import { validDutchPileClick } from 'store/dutchPile/operations';
+import { ActiveCard } from 'store/players';
+import { clearActiveCard } from 'store/players/actions';
+import { selectCurrentPlayerNumber } from 'store/players/selectors';
 import styled from 'styled-components';
 
 
@@ -25,13 +26,14 @@ const InvalidEmptyDutchPile = styled.div`
 
 export const EmptyDutchPileComponent: React.FC<EmptyDutchPileProps> = ({activeCard}) => {
   const dispatch = useDispatch();
+  const playerNumber = useSelector(selectCurrentPlayerNumber);
 
   const handleValidEmptyDutchPileClick = (): void => {
     dispatch(validDutchPileClick(activeCard, DutchPileAction.CREATE));
   };
 
   const handleInvalidEmptyDutchPileClick = (): void => {
-    dispatch(clearActiveCard());
+    dispatch(clearActiveCard(playerNumber));
   };
 
   return (

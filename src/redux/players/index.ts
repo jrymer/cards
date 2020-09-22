@@ -1,21 +1,34 @@
+import { Card } from 'models/card';
+import { Piles } from 'models/piles';
 import { PlayerNumber } from 'models/playerNumbers';
-import { BlitzPileState } from 'store/blitzPile';
-import { PostPileState } from 'store/postPile';
-import { WoodPileState } from 'store/woodPile';
+
+export interface ScoreMap {
+    playerNumber: PlayerNumber;
+    score: number;
+}
 
 export interface Player {
     name: string;
-    id: PlayerNumber;
-    playerNumber: string
+    playerNumber: PlayerNumber;
     startTime: number;
+    totalScore: number;
+    roundScore: number;
+    pointsFromDutchPile: number;
+}
+
+export interface ActiveCard {
+  card: Card;
+  pile: Piles;
 }
 
 export interface HandState {
-    blitzPile: BlitzPileState;
-    postPile: PostPileState;
-    woodPile: WoodPileState;
+    activeCard: ActiveCard;
+    blitzPile: Card[];
+    postPile: Card[];
+    woodPile: Card[];
 }
 
 export interface PlayerState extends Player {
     hand: HandState;
 }
+

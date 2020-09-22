@@ -1,6 +1,6 @@
 import { PlayerBoardComponent } from 'components/gameSpace/playPiles/playerBoard';
 import { NextRoundLobby } from 'components/menu/nextRoundLobbyView';
-import { GameStates } from 'models/games';
+import { GameStatus } from 'models/games';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { selectGameStatus } from 'store/game/selectors';
@@ -18,7 +18,7 @@ export const Board: React.FC = () => {
 
   return (
     <BoardContainer>
-      {gameStatus === GameStates.ACTIVE
+      {gameStatus === GameStatus.ACTIVE
         ? <>
           <PlayerBoardComponent />
           <DutchPileContainerComponent />

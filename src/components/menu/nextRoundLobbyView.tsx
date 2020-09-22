@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { GameScore } from 'store/game';
 import { startNewRound } from 'store/game/operations';
-import { selectGameScore } from 'store/game/selectors';
+import { ScoreMap } from 'store/players';
+import { selectPlayersScoreMap } from 'store/players/selectors';
 import styled from 'styled-components';
 
 const StartButton = styled.button`
@@ -11,20 +11,20 @@ const StartButton = styled.button`
 `;
 
 export const NextRoundLobby: React.FC = () => {
-    const gameScore: GameScore = useSelector(selectGameScore);
+    const gameScore: ScoreMap[] = useSelector(selectPlayersScoreMap);
     const dispatch = useDispatch();
 
-    const handleStartNextRound = () => {
+    const handleStartNextRound = (): void => {
         dispatch(startNewRound());
     };
 
-    const renderScore = () => {
+    const renderScore = (): React.ReactNode => {
         if (gameScore) {
-            return Object.keys(gameScore).map((playerId: string) => {
-                const { name, score } = gameScore[playerId];
+            return gameScore.map((scoreMap: ScoreMap) => {
+                const { playerNumber, score } = scoreMap;
                 return (
-                    <div key={playerId}>
-                        {name}: {score}
+                    <div key={playerNumber}>
+                        {playerNumber}: {score}
                     </div>
                 );
             });
