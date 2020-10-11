@@ -12,12 +12,21 @@ export enum CardColorNames {
   YELLOW = 'YELLOW'
 }
 
+export enum PlayerImages {
+  BUTTER = 'butter',
+  PLOUGH = 'plough',
+  SPICKET = 'spicket',
+  BUCKET = 'bucket',
+  BUGGY = 'buggy',
+  BASKET = 'basket',
+  BEER = 'beer',
+  COW = 'cow',
+  WINDMILL = 'windmill',
+  WHEAT = 'wheat'
+  
+}
+
 export interface Card {
   color: CardColorNames;
   cardValue: number;
 }
-
-export const initialTopCard: Card = {
-  color: null,
-  cardValue: 0
-};

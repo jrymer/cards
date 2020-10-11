@@ -1,41 +1,29 @@
+import { makeStyles } from '@material-ui/core';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { endRound } from 'store/game/operations';
-import { selectCurrentPlayerName } from 'store/players/selectors';
-import styled from 'styled-components';
 
 import { BlitzDeck } from './blitzDeck';
 import { PostPile } from './postPile';
 import { WoodPile } from './woodPile';
 
-const PlayerHandContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  border: solid black;
-`;
-const Button = styled.button`
-  border: solid black;
-`;
+interface Props {
+  gridClass: string;
+}
 
-export const PlayerBoardComponent: React.FC = () => {
-  const dispatch = useDispatch();
-  const playerName = useSelector(selectCurrentPlayerName);
-  
-  const handleEndRound = (): void => {
-    dispatch(endRound());
+const styles = makeStyles(() => ({
+  playerHandContainer: {
+    display: 'grid',
+    gridTemplateColumns: '20% 60% 20%'
   }
+}));
+
+export const PlayerBoardComponent: React.FC<Props> = ({gridClass}) => {
+  const classes = styles();
 
   return (
-    <>
-      <div>
-        {playerName}
-      </div>
-      <Button onClick={handleEndRound}>End Round</Button>
-      <PlayerHandContainer>
-        <BlitzDeck />
-        <PostPile />
-        <WoodPile />
-      </PlayerHandContainer>
-    </>
+    <div className={`${classes.playerHandContainer} ${gridClass}`}>
+      <BlitzDeck />
+      <PostPile />
+      <WoodPile />
+    </div>
   );
 }

@@ -1,25 +1,50 @@
-import { DutchPileComponent } from 'components/gameSpace/dutchPile/activeDutchPile';
-import { EmptyDutchPileComponent } from 'components/gameSpace/dutchPile/emptyDutchPile';
-import { Card } from 'models/card';
+import { makeStyles } from '@material-ui/core';
 import React from 'react';
-import { useSelector } from 'react-redux';
+
+import { DutchPileComponent } from 'components/gameSpace/dutchPile/activeDutchPile';
+import { Card } from 'models/card';
+import { DutchPileAction } from 'models/piles';
+import { useDispatch, useSelector } from 'react-redux';
+import { validDutchPileClick } from 'store/dutchPile/operations';
 import { selectDutchPileState } from 'store/dutchPile/selectors';
 import { ActiveCard } from 'store/players';
-import { selectActiveCard, selectActivePlayers } from 'store/players/selectors';
-import styled from 'styled-components';
+import { clearActiveCard } from 'store/players/actions';
+import { selectActiveCard, selectCurrentPlayerNumber } from 'store/players/selectors';
 
-const DutchPileContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  border: solid black;
-`;
+interface Props {
+  gridClass: string;
+}
 
-export const DutchPileContainerComponent: React.FC = () => {
+interface StyleProps {
+  valid: boolean;
+}
+
+const styles = makeStyles(() => ({
+  dutchPilesContainer: (props: StyleProps) => ({
+    display: 'flex',
+    border: 'solid',
+    flexWrap: 'wrap',
+    cursor: props.valid ? 'pointer' : 'auto',
+    borderColor: props.valid ? 'green' : 'black'
+  })
+}));
+
+export const DutchPileContainerComponent: React.FC<Props> = ({gridClass}) => {
   const activeCard: ActiveCard = useSelector(selectActiveCard);
   const dutchPiles = useSelector(selectDutchPileState);
-  const activePlayers = useSelector(selectActivePlayers);
-  const dutchPileKeys = dutchPiles ? Object.keys(dutchPiles) : [];
-  
+  const playerNumber = useSelector(selectCurrentPlayerNumber);
+  const validNewDutchPileCard = React.useMemo(() => activeCard?.card.cardValue === 1, [activeCard]);
+  const classes = styles({ valid: validNewDutchPileCard });
+  const dispatch = useDispatch();
+
+  const handleDutchContainerClick = () => {
+    if (validNewDutchPileCard) {
+      dispatch(validDutchPileClick(activeCard, DutchPileAction.CREATE));
+    } else {
+      dispatch(clearActiveCard(playerNumber));
+    }
+  }
+
   const renderDutchPiles = (): React.ReactNode => (
     Object.keys(dutchPiles).map((key: string) => {
       
@@ -31,9 +56,8 @@ export const DutchPileContainerComponent: React.FC = () => {
   );
 
   return (
-    <DutchPileContainer>
-      {dutchPileKeys.length < (activePlayers.length * 4) && <EmptyDutchPileComponent activeCard={activeCard} />}
+    <div className={`${classes.dutchPilesContainer} ${gridClass}`} onClick={handleDutchContainerClick}>
       {dutchPiles && renderDutchPiles()}
-    </DutchPileContainer>
+    </div>
   );
 };
