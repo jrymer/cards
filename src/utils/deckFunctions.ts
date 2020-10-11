@@ -1,4 +1,5 @@
 import { Card } from 'models/card';
+import { HandState } from 'store/players';
 import { getColorNameValues, getTypeSafeColorName } from 'utils/cardFunctions';
 
 /**
@@ -34,3 +35,24 @@ export const buildDeck = (): Card[] => {
 
   return shuffleDeck(deck);
 };
+
+export const getHand = (): HandState => {
+  const deck = buildDeck();
+  const hand: HandState = {
+    activeCard: null,
+    blitzPile: deck.splice(0, 10),
+    postPile: deck.splice(0, 3),
+    woodPile: deck
+  };
+  return hand;
+}
+
+/**
+ * Used for filtering cards out of decks, like removing the card from a wood pile
+ *
+ * @param {Card[]} deck Deck to have a card filtered out
+ * @param {Card} toBeFiltered The card you want to remove from the deck
+ * @return {*}  {Card[]} The new deck without the card in it
+ */
+export const filterCard = (deck: Card[], toBeFiltered: Card): Card[] =>
+  deck.filter((card: Card) => (card.cardValue !== toBeFiltered.cardValue) || (card.color !== toBeFiltered.color));

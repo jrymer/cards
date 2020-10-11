@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { endRound } from 'store/game/operations';
-import { selectPlayerState } from 'store/players/selectors';
+import { selectCurrentPlayerName } from 'store/players/selectors';
 import styled from 'styled-components';
 
 import { BlitzDeck } from './blitzDeck';
@@ -19,16 +19,16 @@ const Button = styled.button`
 
 export const PlayerBoardComponent: React.FC = () => {
   const dispatch = useDispatch();
-  const player = useSelector(selectPlayerState);
+  const playerName = useSelector(selectCurrentPlayerName);
   
-  const handleEndRound = () => {
+  const handleEndRound = (): void => {
     dispatch(endRound());
   }
 
   return (
     <>
       <div>
-        {player.name}
+        {playerName}
       </div>
       <Button onClick={handleEndRound}>End Round</Button>
       <PlayerHandContainer>

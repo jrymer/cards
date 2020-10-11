@@ -2,9 +2,8 @@ import { CardComponent } from 'components/gameSpace/card';
 import { Card } from 'models/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setActiveWoodCard } from 'store/dutchPile/actions';
-import { redrawWoodPile, shuffleWoodPile } from 'store/woodPile/actions';
-import { selectTopCardFromWoodPile } from 'store/woodPile/selectors';
+import { redrawWoodPile, setActiveWoodCard, shuffleWoodPile } from 'store/players/actions';
+import { selectCurrentPlayerNumber, selectTopCardFromWoodPile } from 'store/players/selectors';
 import styled from 'styled-components';
 
 const WoodPileContainer = styled.div`
@@ -26,17 +25,18 @@ const ShuffleCardContainer = styled.div`
 export const WoodPile: React.FC = () => {
   const dispatch = useDispatch();
   const topCard = useSelector(selectTopCardFromWoodPile);
+  const currentPlayerNumber = useSelector(selectCurrentPlayerNumber);
 
   const handleRedrawTopCard = (): void => {
-    dispatch(redrawWoodPile());
+    dispatch(redrawWoodPile(currentPlayerNumber));
   };
 
   const handleAddTopCardToDutchPile = (card: Card): void => {
-    dispatch(setActiveWoodCard(card));
+    dispatch(setActiveWoodCard(card, currentPlayerNumber));
   };
 
   const handleShuffleCard = (): void => {
-    dispatch(shuffleWoodPile());
+    dispatch(shuffleWoodPile(currentPlayerNumber));
   }
 
   return (

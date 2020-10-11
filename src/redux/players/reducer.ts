@@ -1,74 +1,115 @@
-import * as blitzPileActions from 'store/blitzPile/actions';
-import { blitzPileReducer, initialBlitzPileState } from 'store/blitzPile/reducer';
+import { Card } from 'models/card';
 import * as playerActions from 'store/players/actions';
-import * as postPileActions from 'store/postPile/actions';
-import { initialPostPileState, postPileReducer } from 'store/postPile/reducer';
-import * as woodPileActions from 'store/woodPile/actions';
-import { initialWoodPileState, woodPileReducer } from 'store/woodPile/reducer';
-
 import { PlayerState } from '.';
 
-export const initialPlayersState: PlayerState = {
+export const initialPlayerState: PlayerState = {
     name: null,
-    id: null,
     playerNumber: null,
+    roundScore: 0,
+    totalScore: 0,
     startTime: null,
     hand: {
+        activeCard: null,
         blitzPile: null,
         postPile: null,
         woodPile: null
     }
 };
 
-type combinedActions = playerActions.PlayerActionTypes
-    | blitzPileActions.BlitzDeckActionTypes
-    | postPileActions.PostPileActionTypes
-    | woodPileActions.WoodPileActionTypes
-
-export const playerReducer = (state = initialPlayersState, action: combinedActions) => {
+export const playerReducer = (state = initialPlayerState, action: playerActions.PlayerActionTypes): PlayerState => {
     switch (action.type) {
-        case playerActions.SET_CURRENT_PLAYER: {
+        case playerActions.SET_SCORE:
             return {
                 ...state,
-                ...action.payload,
+                roundScore: action.payload.score
+            }
+        case playerActions.INITIALIZE_HAND:
+            return {
+                ...state,
                 hand: {
                     ...state.hand,
-                    blitzPile: initialBlitzPileState,
-                    postPile: initialPostPileState,
-                    woodPile: initialWoodPileState
+                    ...action.payload.hand
+                }
+            }
+        case playerActions.NEW_BLITZ_TOP_CARD:
+            return {
+                ...state,
+                hand: {
+                    ...state.hand,
+                    blitzPile: state.hand.blitzPile.slice(1)
+                }
+            }
+
+        case playerActions.ADD_TOP_BLITZ_TO_POST_PILE: {
+            const { activeCard, postPile, blitzPile } = state.hand;
+            const newPostPile = postPile.filter((postCard: Card) => {
+                return (postCard.cardValue !== activeCard.card.cardValue) || (postCard.color !== activeCard.card.color)
+            });
+
+            return {
+                ...state,
+                hand: {
+                    ...state.hand,
+                    postPile: [...newPostPile, ...blitzPile.slice(0, 1)]
                 }
             }
         }
-        case blitzPileActions.INITIALIZE_BLITZ_DECK:
-        case blitzPileActions.NEW_TOP_CARD:
+        case playerActions.SET_ACTIVE_BLITZ_CARD:
+        case playerActions.SET_ACTIVE_POST_CARD:
+        case playerActions.SET_ACTIVE_WOOD_CARD:
             return {
                 ...state,
                 hand: {
                     ...state.hand,
-                    blitzPile: blitzPileReducer(state.hand.blitzPile, action)
+                    activeCard: { ...action.payload }
                 }
-            }
-        case postPileActions.INITIALIZE_POST_PILE:
-        case postPileActions.ADD_TOP_BLITZ_TO_POST_PILE:
+            };
+        case playerActions.REDRAW_WOOD_PILE: {
+            const topThree = state.hand.woodPile.slice(0, 3);
+            const rest = state.hand.woodPile.slice(3);
+            const topThreeToBack = rest.concat(topThree);
+
             return {
                 ...state,
                 hand: {
                     ...state.hand,
-                    postPile: postPileReducer(state.hand.postPile, action)
+                    woodPile: topThreeToBack
                 }
             }
-        case woodPileActions.INITIALIZE_WOOD_PILE:
-        case woodPileActions.PLAY_WOOD_PILE_TOP_CARD:
-        case woodPileActions.REDRAW_WOOD_PILE:
-        case woodPileActions.REMOVE_CARD_FROM_WOOD_PILE:
-        case woodPileActions.SHUFFLE_WOOD_PILE:
+        }
+        case playerActions.SHUFFLE_WOOD_PILE:
             return {
                 ...state,
                 hand: {
                     ...state.hand,
-                    woodPile: woodPileReducer(state.hand.woodPile, action)
+                    woodPile: [...state.hand.woodPile.slice(1).concat(state.hand.woodPile.slice(0, 1))]
+                }
+            };
+        case playerActions.REMOVE_TOP_CARD_FROM_WOOD_PILE: {
+            const {card} = action.payload;
+            
+            return {
+                ...state,
+                hand: {
+                    ...state.hand,
+                    woodPile: state.hand.woodPile.filter((woodCard: Card) =>
+                        (woodCard.color !== card.color) || (woodCard.cardValue !== card.cardValue))
                 }
             }
+        }
+        case playerActions.UPDATE_PLAYERS:
+            return {
+                ...state,
+                ...action.payload
+            }
+        case playerActions.CLEAR_ACTIVE_CARD:
+            return {
+                ...state,
+                hand: {
+                    ...state.hand,
+                    activeCard: null
+                }
+            };
         default:
             return state;
     }

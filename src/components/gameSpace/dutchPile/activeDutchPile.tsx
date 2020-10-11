@@ -1,17 +1,18 @@
 import { Card } from 'models/card';
 import { DutchPileAction } from 'models/piles';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { ActiveCard, DutchPile } from 'store/dutchPile';
-import { clearActiveCard } from 'store/dutchPile/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import { validDutchPileClick } from 'store/dutchPile/operations';
+import { ActiveCard } from 'store/players';
+import { clearActiveCard } from 'store/players/actions';
+import { selectCurrentPlayerNumber } from 'store/players/selectors';
 import styled from 'styled-components';
 
 import { CardComponent } from '../card';
 
 export interface DutchPileProps {
   activeCard: ActiveCard;
-  dutchPile: DutchPile;
+  topCard: Card;
   id: string;
 }
 
@@ -27,40 +28,39 @@ const InvalidDutchPile = styled.div`
   height: 24px;
 `;
 
-export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, dutchPile, id }) => {
+export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, topCard, id }) => {
   const dispatch = useDispatch();
   const card: Card = activeCard?.card;
-  const topDutchPileCard: Card = Object.values(dutchPile)[Object.keys(dutchPile).length - 1];
-
+  const playerNumber = useSelector(selectCurrentPlayerNumber);
   const handleValidDutchPileClick = (): void => {
     dispatch(validDutchPileClick(activeCard, DutchPileAction.ADD, id));
   };
 
   const handleInvalidDutchPileClick = (): void => {
-    dispatch(clearActiveCard());
+    dispatch(clearActiveCard(playerNumber));
   };
 
-  const validDutchPile = () => (
+  const validDutchPile = (): React.ReactNode => (
     <ValidDutchPile>
-      <CardComponent handleClick={handleValidDutchPileClick} card={{ ...topDutchPileCard }} />
+      <CardComponent handleClick={handleValidDutchPileClick} card={topCard} />
     </ValidDutchPile>
   );
 
-  const invalidDutchPile = () => (
+  const invalidDutchPile = (): React.ReactNode => (
     <InvalidDutchPile>
-      <CardComponent handleClick={handleInvalidDutchPileClick} card={{ ...topDutchPileCard }} />
+      <CardComponent handleClick={handleInvalidDutchPileClick} card={topCard} />
     </InvalidDutchPile>
   );
 
-  const renderDutchPile = () => {
+  const renderDutchPile = (): React.ReactNode => {
     if (activeCard) {
-      if ((topDutchPileCard.color === card.color) && (topDutchPileCard.cardValue + 1 === card.cardValue)) {
+      if ((topCard.color === card.color) && (topCard.cardValue + 1 === card.cardValue)) {
         return validDutchPile();
       } else {
         return invalidDutchPile();
       }
     } else {
-      return <CardComponent card={{ ...topDutchPileCard }} />
+      return <CardComponent card={topCard} />
     }
 
   }

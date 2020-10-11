@@ -1,133 +1,105 @@
 import { database } from 'firebase';
-import { GameStates } from 'models/games';
-import { DutchPileAction } from 'models/piles';
+import { GameStatus } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
 import db from 'services/firebase';
-import { ActiveCard } from 'store/dutchPile';
-import { GameResponse } from 'store/game';
+import { HandState } from 'store/players';
+import { updateRoundScore } from './player';
 
-const createGame = async (): Promise<{ newGame: database.Reference, gameResponse: GameResponse }> => {
-    const gameRef = db.realtime.ref(`games`);
-    const gameId = gameRef.push().key;
-    const newGame = db.realtime.ref(`games/${gameId}`);
+const getBaseRef = (gameId: string): string => `games/${gameId}`;
+const getGameRef = (gameId: string): string => `${getBaseRef(gameId)}/game`;
+const getDutchPilesRef = (gameId: string): string => `${getBaseRef(gameId)}/dutchPiles`;
 
-    await newGame.update({
-        createdAt: Date.now(),
-        players: false,
-        status: GameStates.LOBBY,
-        updatedDutchPiles: false
+const createGame = async (): Promise<database.Reference> => {
+    const gamesRef = db.realtime.ref(`games`);
+    const gameId = gamesRef.push().key;
+    const game = db.realtime.ref(getBaseRef(gameId));
+
+    await game.update({
+        game: {
+            gameMetadata: {
+                createdAt: Date.now(),
+                gameId
+            },
+            gameStatus: GameStatus.PRE_GAME_LOBBY,
+            round: 0
+        }
     });
 
-    gameRef.onDisconnect().remove();
+    gamesRef.onDisconnect().remove();
 
-    const createdAt = await newGame.once('value').then((snapshot: database.DataSnapshot) => {
-        const { createdAt } = snapshot.val();
-        return createdAt;
-    }, (error: any) => {
-        console.error(`Reading game failed: ${error}`)
-    });
-    const gameResponse: GameResponse = { gameId, createdAt };
-    return { newGame, gameResponse };
+    return game;
 }
 
 const connectToGame = async (gameId: string): Promise<database.Reference> => {
-    return db.realtime.ref(`games/${gameId}`);
+    const baseGame = db.realtime.ref(getBaseRef(gameId));
+    baseGame.onDisconnect().remove();
+    return baseGame;
 }
-const connectToPlayers = async (gameId: string): Promise<database.Reference> => {
-    return db.realtime.ref(`games/${gameId}/players`);
-}
-const connectToDutchPiles = async (gameId: string): Promise<database.Reference> => {
-    return db.realtime.ref(`games/${gameId}/updatedDutchPiles`);
-}
-const connectToGameStatus = async (gameId: string): Promise<database.Reference> => {
-    return db.realtime.ref(`games/${gameId}/status`);
-}
-const connectToScore = async (gameId: string): Promise<database.Reference> => {
-    return db.realtime.ref(`games/${gameId}/score`);
-}
-const startGame = async (gameId: string): Promise<database.Reference> => {
-    return await db.realtime.ref(`games/${gameId}`).update({
-        createdAt: Date.now(),
-        status: GameStates.ACTIVE,
+
+const startGame = async (gameId: string): Promise<void> => {
+    await db.realtime.ref(getGameRef(gameId)).update({
+        gameStatus: GameStatus.ACTIVE,
         round: 1
     });
-}
+};
 
-const startNewRound = async (gameId: string) => {
-    const gameRef = db.realtime.ref(`games/${gameId}`);
-
+const startNewRound = async (gameId: string, round: number): Promise<void> => {
+    const gameRef = db.realtime.ref(getGameRef(gameId));
     await gameRef.update({
-        dutchPiles: {},
-        status: GameStates.ACTIVE,
-        updatedDutchPiles: {}
+        gameStatus: GameStatus.ACTIVE,
+        round: round + 1
     });
 }
 
 const endGame = async (gameId: string): Promise<void> => {
+    const gameRef = db.realtime.ref(getBaseRef(gameId));
 
+    await gameRef.update({
+        gameStatus: GameStatus.FINISHED
+    });
 }
 
 const endRound = async (gameId: string): Promise<void> => {
-    await db.realtime.ref(`games/${gameId}`).update({
-        status: GameStates.NEW_ROUND_LOBBY
+    await db.realtime.ref(getGameRef(gameId)).update({
+        gameStatus: GameStatus.NEW_ROUND_LOBBY
     });
 }
 
-const updateScore = async (gameId: string, playerId: PlayerNumber, name: string, score: number): Promise<void> => {
-    await db.realtime.ref(`games/${gameId}`).child('score').update({
-        [playerId]: {
-            name,
-            score
-        }
-    });
-}
-
-const addCardToDutchPile = async (card: ActiveCard, dutchPileId: string, gameId: string, playerId: PlayerNumber) => {
-    const dutchPileRef = db.realtime.ref(`games/${gameId}/dutchPiles/${dutchPileId}`);
-    await dutchPileRef.push({
-        ...card.card,
-        playerId
-    });
-    await db.realtime.ref(`games/${gameId}`).update({
-        updatedDutchPiles: {
-            card: card.card,
-            dutchPileAction: DutchPileAction.ADD,
-            dutchPileId,
-        }
-    })
+const resetDutchPiles = async (gameId: string): Promise<void> => {
+    const dutchPileRef = db.realtime.ref(getDutchPilesRef(gameId));
+    await dutchPileRef.set(
+        null
+    );
 };
 
-const createDutchPile = async (gameId: string, card: ActiveCard, playerId: PlayerNumber) => {
-    const dutchPilesRef = db.realtime.ref(`games/${gameId}/dutchPiles`);
-    const dutchPileId = dutchPilesRef.push().key;
-    const newDutchPileRef = db.realtime.ref(`games/${gameId}/dutchPiles/${dutchPileId}`);
-    await newDutchPileRef.push({
-        ...card.card,
+const addCardToDutchPile = async (gameId: string, playerId: PlayerNumber, roundScore: number, pointsFromDutchPile: number, dutchPileId: string, hand: HandState): Promise<void> => {
+    const dutchPileRef = db.realtime.ref(`${getDutchPilesRef(gameId)}/${dutchPileId}`);
+    await dutchPileRef.push({
+        ...hand.activeCard.card,
         playerId
     });
-    await db.realtime.ref(`games/${gameId}`).update({
-        updatedDutchPiles: {
-            card: card.card,
-            dutchPileAction: DutchPileAction.CREATE,
-            dutchPileId: dutchPileId
-        }
-    });
+    await updateRoundScore(gameId, playerId, roundScore, pointsFromDutchPile, hand);
+};
 
-    return dutchPileId;
+const createDutchPile = async (gameId: string, playerId: PlayerNumber, roundScore: number, pointsFromDutchPile: number, hand: HandState): Promise<void> => {
+    const dutchPilesRef = db.realtime.ref(getDutchPilesRef(gameId));
+    const dutchPileId = dutchPilesRef.push().key;
+    const newDutchPileRef = db.realtime.ref(`${getDutchPilesRef(gameId)}/${dutchPileId}`);
+    await newDutchPileRef.push({
+        ...hand.activeCard.card,
+        playerId
+    });
+    await updateRoundScore(gameId, playerId, roundScore, pointsFromDutchPile, hand);
 }
 
 export default {
     addCardToDutchPile,
     createDutchPile,
-    connectToPlayers,
-    connectToDutchPiles,
     connectToGame,
-    connectToGameStatus,
-    connectToScore,
     createGame,
     endGame,
     endRound,
+    resetDutchPiles,
     startGame,
-    startNewRound,
-    updateScore
+    startNewRound
 };

@@ -1,6 +1,6 @@
 import { PlayerNumber } from 'models/playerNumbers';
 
-import { GameResponse, GameScore } from '.';
+import { GameResponse, GameStateCurrentPlayerOmmitted } from '.';
 
 export const INITIALIZE_GAME = '[GAME] INITIALIZE_GAME';
 export const BUMP_ROUND = '[GAME] BUMP_ROUND';
@@ -8,18 +8,17 @@ export const SET_GAME_ID = '[GAME] SET_GAME_ID';
 export const SET_GAME_LOBBY = '[GAME] SET_PRE_GAME_LOBBY';
 export const SET_GAME_NEXT_ROUND_LOBBY = '[GAME] SET_GAME_NEXT_ROUND_LOBBY';
 export const SET_GAME_ACTIVE = '[GAME] SET_GAME_ACTIVE';
-export const SET_ACTIVE_PLAYERS = '[GAME] SET_ACTIVE_PLAYERS';
-export const SET_PLAYER_ACTIVE = '[GAME] SET_PLAYER_ACTIVE';
-export const SET_SCORE = '[GAME] SET_SCORE';
+export const SET_CURRENT_PLAYER = '[GAME] SET_CURRENT_PLAYER';
+export const UPDATE_GAME = '[GAME] UPDATE_GAME';
+// export const SET_SCORE = '[GAME] SET_SCORE';
 
+interface UpdateGame {
+    type: typeof UPDATE_GAME;
+    payload: GameStateCurrentPlayerOmmitted;
+}
 interface InitializeGameAction {
     type: typeof INITIALIZE_GAME;
     payload: GameResponse;
-}
-
-interface SetActivePlayersAction {
-    type: typeof SET_ACTIVE_PLAYERS;
-    payload: PlayerNumber[];
 }
 
 interface SetGameIdAction {
@@ -27,8 +26,8 @@ interface SetGameIdAction {
     payload: string;
 }
 
-interface SetPlayerActiveAction {
-    type: typeof SET_PLAYER_ACTIVE;
+interface SetCurrentPlayerAction {
+    type: typeof SET_CURRENT_PLAYER;
     payload: PlayerNumber;
 }
 
@@ -48,19 +47,14 @@ interface BumpRoundAction {
     type: typeof BUMP_ROUND;
 }
 
-interface SetScoreAction {
-    type: typeof SET_SCORE;
-    payload: GameScore;
-}
+// interface SetScoreAction {
+//     type: typeof SET_SCORE;
+//     payload: GameScore;
+// }
 
 export const initializeGame = (gameResponse: GameResponse): InitializeGameAction => ({
     type: INITIALIZE_GAME,
     payload: gameResponse
-});
-
-export const setActivePlayers = (playerIds: PlayerNumber[]): SetActivePlayersAction => ({
-    type: SET_ACTIVE_PLAYERS,
-    payload: playerIds
 });
 
 export const setGameId = (gameId: string): SetGameIdAction => ({
@@ -68,8 +62,8 @@ export const setGameId = (gameId: string): SetGameIdAction => ({
     payload: gameId
 });
 
-export const setPlayerActive = (playerId: PlayerNumber): SetPlayerActiveAction => ({
-    type: SET_PLAYER_ACTIVE,
+export const setCurrentPlayer = (playerId: PlayerNumber): SetCurrentPlayerAction => ({
+    type: SET_CURRENT_PLAYER,
     payload: playerId
 });
 
@@ -89,18 +83,22 @@ export const bumpRoundNumber = (): BumpRoundAction => ({
     type: BUMP_ROUND
 });
 
-export const setScore = (score: GameScore): SetScoreAction => ({
-    type: SET_SCORE,
-    payload: score
+export const updateGame = (gameState: GameStateCurrentPlayerOmmitted): UpdateGame => ({
+    type: UPDATE_GAME,
+    payload: gameState
 });
+
+// export const setScore = (score: GameScore): SetScoreAction => ({
+//     type: SET_SCORE,
+//     payload: score
+// });
 
 
 export type GameActionTypes = InitializeGameAction
-    | SetActivePlayersAction
     | SetGameIdAction
-    | SetPlayerActiveAction
+    | SetCurrentPlayerAction
     | SetGameActiveAction
     | SetGameLobbyAction
     | SetGameNextRoundLobbyAction
     | BumpRoundAction
-    | SetScoreAction;
+    | UpdateGame;

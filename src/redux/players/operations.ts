@@ -1,14 +1,26 @@
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { createPlayer } from 'services/player';
-import { initializeDecks } from 'store/game/operations';
+import { createPlayer, resetHand } from 'services/player';
+import { setCurrentPlayer } from 'store/game/actions';
+import { selectCurrentPlayer } from 'store/game/selectors';
+import { getHand } from 'utils/deckFunctions';
 
 import { Player } from '.';
-import { setCurrentPlayer } from './actions';
+import { State } from '..';
+import { updatePlayers } from './actions';
 
-export const initializePlayer = (player: Player, gameId: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    const createdPlayer = await createPlayer(player, gameId);
-    
-    dispatch(setCurrentPlayer(createdPlayer));
-    dispatch(initializeDecks());
+// import { initializeDecks } from 'store/game/operations';
+
+export const initializePlayer = (player: Player, gameId: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+    const hand = getHand();
+    const players = await createPlayer(player, gameId, hand);
+    dispatch(setCurrentPlayer(player.playerNumber));
+    dispatch(updatePlayers(players));
+    // dispatch(initializeDecks(player.playerNumber));
+};
+
+export const resetPlayerHand = (gameId: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: () => State): Promise<void> => {
+    const hand = getHand();
+    const currentPlayerNumber = selectCurrentPlayer(getState());
+    await resetHand(gameId, currentPlayerNumber, hand);
 };

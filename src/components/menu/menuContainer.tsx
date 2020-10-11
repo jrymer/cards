@@ -15,9 +15,9 @@ export const MenuContainer: React.FC = () => {
   const gameId = useSelector(selectGameId);
   const history = useHistory();
 
-  const handleReturnToMenu = () => {
-    history.push(`/`)
-  }
+  const handleReturnToMenu = (): void => {
+    history.push(`/`);
+  };
 
   return (
     <>

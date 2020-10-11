@@ -1,54 +1,51 @@
 import { ThunkDispatch } from 'redux-thunk'; import { AnyAction } from 'redux';
 import { selectGameId } from 'store/game/selectors';
 import { Piles, DutchPileAction } from 'models/piles';
-import { newTopBlitzCard } from 'store/blitzPile/actions';
-import { Card } from 'models/card';
-import { topBlitzCardToPostPile } from 'store/postPile/actions';
-import { removeCardFromWoodPile } from 'store/woodPile/actions';
-import { clearActiveCard, createDutchPile, setDutchPileAction, addActiveCardToDutchPile } from './actions';
-import { selectPostPile } from 'store/postPile/selectors';
-import { selectTopCardFromBlitzDeck } from 'store/blitzPile/selectors';
-import { ActiveCard } from '.';
 import gameService from 'services/game';
-import { selectPlayerState } from 'store/players/selectors';
+import { selectCurrentPlayerHand, selectCurrentPlayerNumber, selectCurrentPlayerPointsFromDuthcPile } from 'store/players/selectors';
+import { ActiveCard, HandState } from 'store/players';
+import { clearActiveCard } from 'store/players/actions';
+import { filterCard } from 'utils/deckFunctions';
+import { State } from '..';
 
-
-export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: DutchPileAction, dutchPileId?: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: any) => {
+export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: DutchPileAction, dutchPileId?: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: () => State): Promise<void> => {
     const gameId = selectGameId(getState());
-    const postPileFromState = selectPostPile(getState());
-    const player = selectPlayerState(getState());
-    const topBlitzDeckCard = selectTopCardFromBlitzDeck(getState());
-    const card: Card = activeCard?.card;
+    const playerNumber = selectCurrentPlayerNumber(getState());
+    const pointsFromDutchPile = selectCurrentPlayerPointsFromDuthcPile(getState()) + 1;
+    const {blitzPile, postPile, woodPile} = selectCurrentPlayerHand(getState());
+    let newHand: HandState = {activeCard, woodPile, blitzPile, postPile};
 
-    if (dutchPileAction === DutchPileAction.ADD) {
-        dispatch(addActiveCardToDutchPile(dutchPileId));
-        await gameService.addCardToDutchPile(activeCard, dutchPileId, gameId, player.id);
-    }
-
-    dispatch(setDutchPileAction(dutchPileAction));
     switch (activeCard.pile) {
         case Piles.BLITZ:
-            dispatch(newTopBlitzCard());
+            // dispatch(newTopBlitzCard(playerNumber));
+            newHand = {...newHand, blitzPile: blitzPile.slice(1)}
             break;
         case Piles.POST: {
-            const newPostPile = postPileFromState.filter((postCards: Card): boolean => {
-                return (postCards.cardValue !== card.cardValue) || (postCards.color !== card.color);
-            });
-
-            newPostPile.push(topBlitzDeckCard);
-            dispatch(topBlitzCardToPostPile(newPostPile));
-            dispatch(newTopBlitzCard());
+            // Removing the selected post pile card from the post pile
+            // then moving the top card from the blitz pile onto the post pile.
+            const newPostPile = [...filterCard(postPile, activeCard.card), ...blitzPile.slice(0,1)];
+            // Remove the top blitz card
+            newHand = {...newHand, postPile: newPostPile, blitzPile: blitzPile.slice(1)};
+            // dispatch(topBlitzCardToPostPile(playerNumber));
+            // dispatch(newTopBlitzCard(playerNumber));
             break;
         }
         case Piles.WOOD:
-            dispatch(removeCardFromWoodPile(card));
+            newHand = {...newHand, woodPile: filterCard(woodPile, activeCard.card)};
+            // dispatch(removeTopCardFromWoodPile(card, playerNumber));
             break;
     }
 
-    if (dutchPileAction === DutchPileAction.CREATE) {
-        const dutchPileId = await gameService.createDutchPile(gameId, activeCard, player.id);
-        dispatch(createDutchPile(activeCard.card, dutchPileId));
+    const blitzPileDeduction = blitzPile.length * 2;
+    const roundScore = pointsFromDutchPile - blitzPileDeduction;
+    switch (dutchPileAction) {
+        case DutchPileAction.ADD:
+            await gameService.addCardToDutchPile(gameId, playerNumber, roundScore, pointsFromDutchPile, dutchPileId, newHand);
+            break;
+        case DutchPileAction.CREATE:
+            await gameService.createDutchPile(gameId, playerNumber, roundScore, pointsFromDutchPile, newHand);
+            break;
     }
 
-    dispatch(clearActiveCard());
+    dispatch(clearActiveCard(playerNumber));
 }

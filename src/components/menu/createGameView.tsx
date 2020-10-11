@@ -15,10 +15,10 @@ export const CreateGameView: React.FC = () => {
         setId(event.currentTarget.value);
     };
 
-    const handleCreateGame = () => {
+    const handleCreateGame = (): void => {
         dispatch(createGame());
     };
-    const handleJoinGame = () => {
+    const handleJoinGame = (): void => {
         dispatch(joinGame(id));
     }
 

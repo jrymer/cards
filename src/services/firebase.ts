@@ -24,7 +24,7 @@ export const processQuerySnapshot = async <T>(collectionRef: any): Promise<T[]> 
 
       return querySnapshot.docs.map((doc: any) => doc.data() as T);
   } catch (err) {
-      console.log(err);
+      console.error(err);
   }
 };
 
