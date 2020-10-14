@@ -1,14 +1,25 @@
-import { Card } from 'models/card';
+import { Card, PlayerImages } from 'models/card';
 import { Piles } from 'models/piles';
 import { PlayerNumber } from 'models/playerNumbers';
 
 export interface ScoreMap {
     playerNumber: PlayerNumber;
-    score: number;
+    totalScore: number;
+    name: string;
+    playerImage: PlayerImages;
+}
+
+export interface OpponentsHands {
+    name: string;
+    playerImage: PlayerImages;
+    topBlitzCard: Card;
+    postPile: Card[];
+    topWoodCard: Card;
 }
 
 export interface Player {
     name: string;
+    playerImage: PlayerImages;
     playerNumber: PlayerNumber;
     startTime: number;
     totalScore: number;

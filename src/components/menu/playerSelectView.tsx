@@ -1,39 +1,54 @@
-import { CardColorValues } from 'models/card';
-import { GameStatus } from 'models/games';
-import { PlayerNumber } from 'models/playerNumbers';
-import React, { FormEvent } from 'react';
+import { TextField } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
+import React, { ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
+import CommonButton from 'components/common/CommonButton';
+import { CardColorValues, PlayerImages } from 'models/card';
+import { GameStatus } from 'models/games';
+import { PlayerNumber } from 'models/playerNumbers';
 import { startGame } from 'store/game/operations';
-import { selectGameId, selectGameStatus } from 'store/game/selectors';
+import { selectGameId, selectGameStatus, selectPlayerImages } from 'store/game/selectors';
 import { Player } from 'store/players';
 import { initializePlayer } from 'store/players/operations';
 import { selectActivePlayers } from 'store/players/selectors';
-import styled from 'styled-components';
+import CommonLabel from 'components/common/Label';
+import PlayerImageCard from 'components/gameSpace/cards/PlayerImageCards';
 
-interface PlayerButtonProps {
-  color: CardColorValues;
-}
-
-const Button = styled.button`
-  border: solid black;
-`;
-
-const PlayerButton = styled.button`
-  background-color: ${(p: PlayerButtonProps): CardColorValues => p.color};
-  border: solid black;
-`;
-const StartButton = styled.button`
-  background-color: 'green';
-  border: solid black;
-`;
+const styles = makeStyles(() => ({
+  playerSelectContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%'
+  },
+  column: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  playerButtonsContainer: {
+    display: 'flex'
+  },
+  buttonContainer: {
+    display: 'flex'
+  },
+  textField: {
+    width: 500
+  }
+}));
 
 export const PlayerSelect: React.FC = () => {
+  const classes = styles();
   const history = useHistory();
   const dispatch = useDispatch();
   const gameId = useSelector(selectGameId);
   const gameStatus = useSelector(selectGameStatus);
   const activePlayers = useSelector(selectActivePlayers);
+  const playerImages = useSelector(selectPlayerImages);
+
+  const [step, setStep] = React.useState<number>(0);
   const [playerName, setPlayerName] = React.useState<string>('');
 
   // Listen to the game state and if it changes to active go to the board
@@ -44,11 +59,11 @@ export const PlayerSelect: React.FC = () => {
     }
   }, [dispatch, gameId, gameStatus, history]);
 
-  const handlePlayerButtonClick = async (playerNumber: PlayerNumber): Promise<void> => {
+  const handlePlayerButtonClick = async (playerNumber: PlayerNumber, playerImage: PlayerImages): Promise<void> => {
     // const playerNumber = Object.keys(PlayerNumber)[Object.values(PlayerNumber).indexOf(playerId)];
-
     const player: Player = {
       name: playerName || playerNumber,
+      playerImage,
       playerNumber,
       pointsFromDutchPile: 0,
       roundScore: 0,
@@ -56,6 +71,7 @@ export const PlayerSelect: React.FC = () => {
       totalScore: 0
     };
     dispatch(initializePlayer(player, gameId));
+    incrementStep();
   };
 
   const handleStartGame = (): void => {
@@ -65,26 +81,57 @@ export const PlayerSelect: React.FC = () => {
 
   const renderPlayerButtons = (): React.ReactNode => {
     const colorValues = Object.values(CardColorValues);
-    const availablePlayerNames = Object.keys(PlayerNumber).filter((name: PlayerNumber) => activePlayers ? !activePlayers.includes(name) : name);
+    const availablePlayerNames = Object.keys(PlayerNumber)
+      .filter((name: PlayerNumber) =>
+        activePlayers ? !activePlayers.includes(name) : name);
     const playerNames = Object.keys(PlayerNumber);
-
-    return Object.values(PlayerNumber).map((playerName: PlayerNumber, index: number) => (
-      <PlayerButton disabled={!availablePlayerNames.includes(playerNames[index])} key={playerName} color={colorValues[index]} onClick={(): Promise<void> => handlePlayerButtonClick(playerName)}>{playerNames[index]}</PlayerButton>
+    const playerButtons = Object.values(PlayerNumber).map((playerName: PlayerNumber, index: number) => (
+      <PlayerImageCard
+        key={playerName}
+        disabled={!availablePlayerNames.includes(playerNames[index])}
+        onClick={(): Promise<void> => handlePlayerButtonClick(playerName, playerImages[index])}
+        source={playerImages[index]}
+        backgroundColor={colorValues[index]}
+      />
     ));
+    return (
+      <div className={classes.column}>
+        <CommonLabel label="Select a player image to continue" />
+        <div className={classes.playerButtonsContainer}>
+          {playerButtons}
+        </div>
+      </div>
+    )
   };
 
-  const handlePlayerNameChange = (event: FormEvent<HTMLInputElement>): void => {
+  const handlePlayerNameChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setPlayerName(event.currentTarget.value);
   }
   const copyGameId = () => navigator.clipboard.writeText(gameId);
 
+  const incrementStep = () => setStep(step + 1);
+
+  const renderEnterDisplayName = (
+    <>
+      <CommonLabel label="Enter a display name to continue" />
+      <TextField className={classes.textField} name='playerName' onChange={handlePlayerNameChange} placeholder="Enter display name" value={playerName} variant="outlined" />
+      <CommonButton disabled={!Boolean(playerName.length)} onClick={incrementStep} title="Submit display name" width={500} />
+    </>
+  );
+
   return (
-    <div>
-      <input type='text' name='playerName' onChange={handlePlayerNameChange} value={playerName}></input>
-      {renderPlayerButtons()}
-      <StartButton disabled={activePlayers && activePlayers.length < 2} onClick={handleStartGame}>START</StartButton>
-      {gameId}
-      <Button onClick={copyGameId}>Copy Game ID</Button>
+    <div className={classes.playerSelectContainer}>
+      {step === 0 && renderEnterDisplayName}
+      {step === 1 && renderPlayerButtons()}
+      {step === 2 && (
+        <div className={classes.column}>
+          <CommonLabel label="More than one player must be active to continue" />
+          <div className={classes.buttonContainer}>
+            <CommonButton disabled={activePlayers && activePlayers.length < 2} onClick={handleStartGame} title="Start Game" />
+            <CommonButton onClick={copyGameId} title="Copy Game ID" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

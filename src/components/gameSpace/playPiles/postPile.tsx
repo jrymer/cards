@@ -1,18 +1,30 @@
-import { CardComponent } from 'components/gameSpace/card';
+import { makeStyles } from '@material-ui/core';
+import CommonLabel from 'components/common/Label';
+import { CardComponent } from 'components/gameSpace/cards/card';
 import { Card } from 'models/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActivePostCard } from 'store/players/actions';
 import { selectCurrentPlayerNumber, selectPostPile } from 'store/players/selectors';
-import styled from 'styled-components';
 
-const PostPileContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
+const styles = makeStyles(() => ({
+  mainContainer: {
+    justifySelf: 'center'
+  },
+  postPileContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  }
+}));
+
+const labelStyle: React.CSSProperties = {
+  alignSelf: 'flex-start',
+  margin: 15
+};
 
 export const PostPile: React.FC = () => {
   const dispatch = useDispatch();
+  const classes = styles();
   const postPileFromState = useSelector(selectPostPile);
   const currentPlayerNumber = useSelector(selectCurrentPlayerNumber);
 
@@ -25,11 +37,11 @@ export const PostPile: React.FC = () => {
   ));
 
   return (
-    <div>
-      Post Pile
-      <PostPileContainer>
+    <div className={classes.mainContainer}>
+      <CommonLabel customStyles={labelStyle} label="Post Pile" />
+      <div className={classes.postPileContainer}>
         {postPile}
-      </PostPileContainer>
+      </div>
     </div>
   )
 };

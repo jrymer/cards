@@ -2,7 +2,8 @@ import { database } from 'firebase';
 import { GameStatus } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
 import db from 'services/firebase';
-import { HandState } from 'store/players';
+import { HandState, Player, PlayerState } from 'store/players';
+import playerCardRandomizer from 'utils/playerCardRandomizer';
 import { updateRoundScore } from './player';
 
 const getBaseRef = (gameId: string): string => `games/${gameId}`;
@@ -13,6 +14,7 @@ const createGame = async (): Promise<database.Reference> => {
     const gamesRef = db.realtime.ref(`games`);
     const gameId = gamesRef.push().key;
     const game = db.realtime.ref(getBaseRef(gameId));
+    const playerImages = playerCardRandomizer();
 
     await game.update({
         game: {
@@ -21,8 +23,34 @@ const createGame = async (): Promise<database.Reference> => {
                 gameId
             },
             gameStatus: GameStatus.PRE_GAME_LOBBY,
-            round: 0
+            round: 0,
+            playerImages
         }
+    });
+
+    gamesRef.onDisconnect().remove();
+
+    return game;
+}
+
+const createMockGame = async (players: { [PlayerNumber.PLAYER_ONE]: PlayerState, [PlayerNumber.PLAYER_TWO]: PlayerState }): Promise<database.Reference> => {
+    const gamesRef = db.realtime.ref(`games`);
+    const gameId = gamesRef.push().key;
+    const game = db.realtime.ref(getBaseRef(gameId));
+    const playerImages = playerCardRandomizer();
+
+    await game.update({
+        game: {
+            gameMetadata: {
+                createdAt: Date.now(),
+                gameId
+            },
+            currentPlayer: PlayerNumber.PLAYER_ONE,
+            gameStatus: GameStatus.ACTIVE,
+            round: 1,
+            playerImages
+        },
+        players
     });
 
     gamesRef.onDisconnect().remove();
@@ -97,6 +125,7 @@ export default {
     createDutchPile,
     connectToGame,
     createGame,
+    createMockGame,
     endGame,
     endRound,
     resetDutchPiles,

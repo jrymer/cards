@@ -15,7 +15,8 @@ module.exports = {
       'store': path.resolve(__dirname, 'src/redux/'),
       'models': path.resolve(__dirname, 'src/models/'),
       'services': path.resolve(__dirname, 'src/services'),
-      'utils': path.resolve(__dirname, 'src/utils')
+      'utils': path.resolve(__dirname, 'src/utils'),
+      'assets': path.resolve(__dirname, 'src/assets/')
     }
   },
   // Where to put stuff when I run npm run build
@@ -31,7 +32,13 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /(node_modules)/,
         loader: 'babel-loader'
-      }
+      },
+      {
+        test: /\.(png)$/,
+        use: [
+          'file-loader'
+        ]
+      },
     ]
   },
   // will redirect 404s to /index.html

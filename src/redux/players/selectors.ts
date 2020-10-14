@@ -1,11 +1,11 @@
-import { Card } from 'models/card';
+import { Card, PlayerImages } from 'models/card';
 import { PlayerNumber } from 'models/playerNumbers';
 import { selectCurrentPlayer } from 'store/game/selectors';
 
-import { ActiveCard, HandState, PlayerState, ScoreMap } from '.';
+import { ActiveCard, HandState, OpponentsHands, PlayerState, ScoreMap } from '.';
 import { State } from '../';
 
-export const selectPlayerState = (state: State): {[key in PlayerNumber]: PlayerState} => state.players;
+export const selectPlayerState = (state: State): { [key in PlayerNumber]: PlayerState } => state.players;
 export const selectCurrentPlayerState = (state: State): PlayerState => {
     const currentPlayer = selectCurrentPlayer(state);
     const players = selectPlayerState(state);
@@ -19,6 +19,7 @@ export const selectActivePlayers = (state: State): PlayerNumber[] | null => {
     return Object.keys(playerState).map((playerNumber: PlayerNumber) => playerNumber);
 };
 
+export const selectPlayerImage = (state: State): PlayerImages => selectCurrentPlayerState(state).playerImage;
 export const selectCurrentPlayerHand = (state: State): HandState => selectCurrentPlayerState(state).hand;
 export const selectCurrentPlayerNumber = (state: State): PlayerNumber => selectCurrentPlayerState(state).playerNumber;
 export const selectCurrentPlayerName = (state: State): string => selectCurrentPlayerState(state).name;
@@ -29,10 +30,33 @@ export const selectActiveCard = (state: State): ActiveCard => selectCurrentPlaye
 export const selectPlayersScoreMap = (state: State): ScoreMap[] => {
     const players = selectPlayerState(state);
     return Object.keys(players).map((playerNumber: PlayerNumber) => {
-        return {playerNumber, score: players[playerNumber].totalScore }
+        const {totalScore, playerImage, name} = players[playerNumber];
+        return {
+            playerNumber,
+            totalScore,
+            playerImage,
+            name
+        }
     });
 };
-
+export const selectOpponentsHands = (state: State): OpponentsHands[] => {
+    const playerState = selectPlayerState(state);
+    const currentPlayer = selectCurrentPlayerNumber(state);
+    return Object.keys(playerState)
+        .filter((playerNumber: PlayerNumber) => (
+            playerNumber !== currentPlayer
+        ))
+        .map((playerNameString: PlayerNumber) => {
+            const { name, hand, playerImage } = playerState[playerNameString];
+            return {
+                name,
+                playerImage,
+                topBlitzCard: hand.blitzPile.slice(0, 1)[0],
+                postPile: hand.postPile,
+                topWoodCard: hand.woodPile.slice(0, 1)[0],
+            }
+        });
+};
 export const selectTopCardFromBlitzDeck = (state: State): Card => selectCurrentPlayerHand(state).blitzPile[0];
 export const selectPostPile = (state: State): Card[] => selectCurrentPlayerHand(state).postPile;
 export const selectTopCardFromWoodPile = (state: State): Card => selectCurrentPlayerHand(state).woodPile[0];

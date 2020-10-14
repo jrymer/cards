@@ -1,44 +1,67 @@
+import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import CommonButton from 'components/common/CommonButton';
 import { startNewRound } from 'store/game/operations';
 import { ScoreMap } from 'store/players';
 import { selectPlayersScoreMap } from 'store/players/selectors';
-import styled from 'styled-components';
+import CommonLabel from 'components/common/Label';
+import { selectRound } from 'store/game/selectors';
+import { ScoreCard } from 'components/gameSpace/cards/scoreCard';
 
-const StartButton = styled.button`
-  background-color: 'green';
-  border: solid black;
-`;
+interface Props {
+    gridClass: string;
+}
 
-export const NextRoundLobby: React.FC = () => {
+const styles = makeStyles(() => ({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    cardsContainer: {
+        display: 'flex'
+    }
+}));
+
+export const NextRoundLobby: React.FC<Props> = ({ gridClass }) => {
+    const classes = styles();
     const gameScore: ScoreMap[] = useSelector(selectPlayersScoreMap);
+    const round = useSelector(selectRound);
     const dispatch = useDispatch();
 
     const handleStartNextRound = (): void => {
         dispatch(startNewRound());
     };
 
-    const renderScore = (): React.ReactNode => {
+    const renderScores = (): React.ReactNode => {
         if (gameScore) {
             return gameScore.map((scoreMap: ScoreMap) => {
-                const { playerNumber, score } = scoreMap;
+                const { totalScore, name, playerImage, playerNumber } = scoreMap;
                 return (
-                    <div key={playerNumber}>
-                        {playerNumber}: {score}
-                    </div>
+                    <ScoreCard
+                        key={playerNumber}
+                        image={playerImage}
+                        name={name}
+                        score={totalScore}
+                    />
                 );
-            });
+            })
         }
     }
 
+
     return (
-        <>
-            Next Round lobby
-            <StartButton onClick={handleStartNextRound}>START NEXT ROUND</StartButton>
+        <div className={`${classes.container} ${gridClass}`}>
+            <CommonLabel label={`End of round ${round}`} />
             <div>
-                Score
-                {renderScore()}
+                <div className={classes.cardsContainer}>
+                    {renderScores()}
+                </div>
             </div>
-        </>
-    )
+            <CommonButton onClick={handleStartNextRound} title="Start next round" />
+        </div >
+    );
 }

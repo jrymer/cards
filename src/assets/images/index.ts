@@ -1,0 +1,10 @@
+export {default as carriage} from './carriage.png';
+export {default as plough} from './plough.png';
+export {default as spicket} from './spicket.png';
+export {default as waterbucket} from './waterbucket.png';
+export {default as butter} from './butter.png';
+export {default as beer} from './beer.png';
+export {default as cow} from './cow.png';
+export {default as windmill} from './windmill.png';
+export {default as basket} from './basket.png';
+export {default as wheat} from './wheat.png';

@@ -1,29 +1,38 @@
-import { CardComponent } from 'components/gameSpace/card';
-import { Card } from 'models/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+
+import CommonButton from 'components/common/CommonButton';
+import CommonLabel from 'components/common/Label';
+import { CardComponent } from 'components/gameSpace/cards/card';
+import { Card } from 'models/card';
 import { redrawWoodPile, setActiveWoodCard, shuffleWoodPile } from 'store/players/actions';
 import { selectCurrentPlayerNumber, selectTopCardFromWoodPile } from 'store/players/selectors';
-import styled from 'styled-components';
+import { endRound } from 'store/game/operations';
 
-const WoodPileContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 4px;
-`;
-const DrawCardContainer = styled.div`
-  border: solid grey;
-  width: 24px;
-  height: 24px;
-`;
-const ShuffleCardContainer = styled.div`
-  border: solid brown;
-  width: 24px;
-  height: 24px;
-`;
+const styles = makeStyles(() => ({
+  woodPileContainer: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  mainContainer: {
+    display: 'flex'
+  },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  }
+}));
+
+const labelStyle: React.CSSProperties = {
+  alignSelf: 'flex-start',
+  margin: 15
+};
 
 export const WoodPile: React.FC = () => {
   const dispatch = useDispatch();
+  const classes = styles();
   const topCard = useSelector(selectTopCardFromWoodPile);
   const currentPlayerNumber = useSelector(selectCurrentPlayerNumber);
 
@@ -37,15 +46,24 @@ export const WoodPile: React.FC = () => {
 
   const handleShuffleCard = (): void => {
     dispatch(shuffleWoodPile(currentPlayerNumber));
-  }
+  };
+
+  const handleEndRound = (): void => {
+    dispatch(endRound());
+  };
 
   return (
-    <WoodPileContainer>
-      Wood pile
-      <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} />
-      <DrawCardContainer onClick={handleRedrawTopCard}>D</DrawCardContainer> 
-      <ShuffleCardContainer onClick={handleShuffleCard}>S</ShuffleCardContainer>
-    </WoodPileContainer>
+    <div className={classes.woodPileContainer}>
+      <CommonLabel customStyles={labelStyle} label="Wood Pile" />
+      <div className={classes.mainContainer}>
+        <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} />
+        <div className={classes.buttonContainer}>
+          <CommonButton onClick={handleRedrawTopCard} title="Re-draw" width={150} />
+          <CommonButton onClick={handleShuffleCard} title="Shuffle" width={150} />
+          <CommonButton onClick={handleEndRound} title="End Round" width={150} />
+        </div>
+      </div>
+    </div>
   )
 };
 

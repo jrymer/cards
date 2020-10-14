@@ -1,32 +1,54 @@
-import React, { FormEvent } from 'react';
+import React, { ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { createGame, joinGame } from 'store/game/operations';
-import styled from 'styled-components';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
-const Button = styled.button`
-  border: solid black;
-`;
+import { createGame, joinGame, mockGame } from 'store/game/operations';
+import CommonButton from 'components/common/CommonButton';
+
+const styles = makeStyles(() => ({
+    container: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    buttonContainer: {
+        display: 'flex',
+        margin: 10
+    },
+    textField: {
+        width: 500
+    }
+}));
 
 export const CreateGameView: React.FC = () => {
+    const classes = styles();
     const dispatch = useDispatch();
     const [id, setId] = React.useState<string>('');
 
-    const handleGameIdChange = (event: FormEvent<HTMLInputElement>): void => {
+    const handleGameIdChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setId(event.currentTarget.value);
     };
-
     const handleCreateGame = (): void => {
         dispatch(createGame());
     };
     const handleJoinGame = (): void => {
         dispatch(joinGame(id));
-    }
+    };
+    const handleMockGame = () => {
+        dispatch(mockGame());
+    };
 
     return (
-        <>
-            <input type='text' name='gameId' onChange={handleGameIdChange} value={id}></input>
-            <Button onClick={handleJoinGame}>Join Game</Button>
-            <Button onClick={handleCreateGame}>Create Game</Button>
-        </>
+        <div className={classes.container}>
+            <TextField className={classes.textField} placeholder="Enter game code" name='gameId' onChange={handleGameIdChange} value={id} variant="outlined" />
+            <div className={classes.buttonContainer}>
+                <CommonButton disabled={id.length !== 20} onClick={handleJoinGame} title="Join Game"/>
+                <CommonButton onClick={handleCreateGame} title="Create Game"/>
+            </div>
+            <CommonButton onClick={handleMockGame} title="Mock Game"/>
+        </div>
     )
 }

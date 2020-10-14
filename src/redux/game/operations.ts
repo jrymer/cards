@@ -1,13 +1,16 @@
 import { database } from 'firebase';
+import { CardColorNames, PlayerImages } from 'models/card';
 import { PlayerNumber } from 'models/playerNumbers';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import gameService from 'services/game';
 import { updatePlayersAtEndRoundWithTotalScore } from 'services/player';
 import { resetDutchPiles, updateDutchPiles } from 'store/dutchPile/actions';
+import { PlayerState } from 'store/players';
 import { updatePlayers } from 'store/players/actions';
 import { resetPlayerHand } from 'store/players/operations';
 import { selectPlayerState } from 'store/players/selectors';
+import { getHand } from 'utils/deckFunctions';
 
 import { State } from '..';
 import { updateGame } from './actions';
@@ -31,6 +34,50 @@ const handleGameUpdates = async (game: database.Reference, dispatch: thunkDispat
 
 export const createGame = () => async (dispatch: thunkDispatch): Promise<void> => {
     const game = await gameService.createGame();
+    handleGameUpdates(game, dispatch);
+};
+
+export const mockGame = () => async (dispatch: thunkDispatch): Promise<void> => {
+    const playerOneHand = getHand();
+    playerOneHand.postPile = [
+        {cardValue: 1, color: CardColorNames.RED},
+        {cardValue: 2, color: CardColorNames.RED},
+        {cardValue: 3, color: CardColorNames.RED}
+    ];
+    playerOneHand.blitzPile = [
+        {cardValue: 1, color: CardColorNames.BLUE},
+        {cardValue: 1, color: CardColorNames.GREEN},
+        {cardValue: 1, color: CardColorNames.YELLOW},
+        {cardValue: 1, color: CardColorNames.RED},
+        {cardValue: 1, color: CardColorNames.RED},
+        {cardValue: 1, color: CardColorNames.RED},
+        {cardValue: 10, color: CardColorNames.RED},
+        {cardValue: 1, color: CardColorNames.BLUE},
+        {cardValue: 2, color: CardColorNames.BLUE}
+    ];
+    const mockPlayers: {[PlayerNumber.PLAYER_ONE]: PlayerState, [PlayerNumber.PLAYER_TWO]: PlayerState} = {
+        [PlayerNumber.PLAYER_ONE]: {
+            hand: {...playerOneHand},
+            name: PlayerNumber.PLAYER_ONE,
+            playerImage: PlayerImages.BASKET,
+            playerNumber: PlayerNumber.PLAYER_ONE,
+            startTime: Date.now(),
+            totalScore: 0,
+            roundScore: 0,
+            pointsFromDutchPile: 0
+        },
+        [PlayerNumber.PLAYER_TWO]: {
+            hand: getHand(),
+            name: PlayerNumber.PLAYER_TWO,
+            playerImage: PlayerImages.BEER,
+            playerNumber: PlayerNumber.PLAYER_TWO,
+            startTime: Date.now(),
+            totalScore: 0,
+            roundScore: 0,
+            pointsFromDutchPile: 0
+        }
+    };
+    const game = await gameService.createMockGame(mockPlayers);
     handleGameUpdates(game, dispatch);
 };
 
