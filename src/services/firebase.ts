@@ -1,5 +1,6 @@
 import 'firebase/database';
 import 'firebase/firestore';
+import 'firebase/analytics';
 
 import * as firebase from 'firebase/app';
 
@@ -13,7 +14,6 @@ firebase.initializeApp({
   appId: "1:731384452190:web:1b385c4b7f9f6a3cc9d0cf",
   measurementId: "G-7Z7WCW5BZW"
 });
-firebase.analytics();
 
 export const logEvent = (event: string): void => firebase.analytics().logEvent(event);
 

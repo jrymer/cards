@@ -48,7 +48,7 @@ export const CreateGameView: React.FC = () => {
                 <CommonButton disabled={id.length !== 20} onClick={handleJoinGame} title="Join Game"/>
                 <CommonButton onClick={handleCreateGame} title="Create Game"/>
             </div>
-            <CommonButton onClick={handleMockGame} title="Mock Game"/>
+            {process.env.NODE_ENV === 'development' && <CommonButton onClick={handleMockGame} title="Mock Game"/>}
         </div>
     )
 }
