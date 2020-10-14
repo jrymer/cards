@@ -1,4 +1,4 @@
-import { Card } from 'models/card';
+import { Card, PlayerImages } from 'models/card';
 import { PlayerNumber } from 'models/playerNumbers';
 
 // Stacks of cards in each of the four colors - 1 through 10 an ASCENDING
@@ -8,6 +8,7 @@ import { PlayerNumber } from 'models/playerNumbers';
 
 export interface DutchPileCard extends Card {
   playerNumber: PlayerNumber;
+  playerImage: PlayerImages;
 }
 export interface DutchPiles {
   [dutchPileId: string]: DutchPileCard;

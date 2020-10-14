@@ -9,7 +9,7 @@ import { CardColorValues, PlayerImages } from 'models/card';
 import { GameStatus } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
 import { startGame } from 'store/game/operations';
-import { selectGameId, selectGameStatus, selectPlayerImages } from 'store/game/selectors';
+import { selectGameId, selectGameStatus, selectCurrentPlayerImages } from 'store/game/selectors';
 import { Player } from 'store/players';
 import { initializePlayer } from 'store/players/operations';
 import { selectActivePlayers } from 'store/players/selectors';
@@ -46,7 +46,7 @@ export const PlayerSelect: React.FC = () => {
   const gameId = useSelector(selectGameId);
   const gameStatus = useSelector(selectGameStatus);
   const activePlayers = useSelector(selectActivePlayers);
-  const playerImages = useSelector(selectPlayerImages);
+  const playerImages = useSelector(selectCurrentPlayerImages);
 
   const [step, setStep] = React.useState<number>(0);
   const [playerName, setPlayerName] = React.useState<string>('');

@@ -44,14 +44,15 @@ export const DutchPileContainerComponent: React.FC<Props> = ({gridClass}) => {
       dispatch(clearActiveCard(playerNumber));
     }
   }
-
+  
   const renderDutchPiles = (): React.ReactNode => (
     Object.keys(dutchPiles).map((key: string) => {
       
       const topDutchIndex = Object.keys(dutchPiles[key]).length - 1;
       const cardValues = {...Object.values(dutchPiles[key])[topDutchIndex]};
-      const topCard: Card = {cardValue: cardValues.cardValue, color: cardValues.color}
-      return  <DutchPileComponent key={key} activeCard={activeCard} topCard={topCard} id={key} />
+      const topCard: Card = {cardValue: cardValues.cardValue, color: cardValues.color};
+      const playerImage = Object.values(dutchPiles[key])[topDutchIndex].playerImage;
+      return  <DutchPileComponent key={key} activeCard={activeCard} topCard={topCard} id={key} playerImage={playerImage}/>
     })
   );
 

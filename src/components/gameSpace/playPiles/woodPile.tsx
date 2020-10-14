@@ -7,7 +7,7 @@ import CommonLabel from 'components/common/Label';
 import { CardComponent } from 'components/gameSpace/cards/card';
 import { Card } from 'models/card';
 import { redrawWoodPile, setActiveWoodCard, shuffleWoodPile } from 'store/players/actions';
-import { selectCurrentPlayerNumber, selectTopCardFromWoodPile } from 'store/players/selectors';
+import { selectCurrentPlayerImage, selectCurrentPlayerNumber, selectTopCardFromWoodPile } from 'store/players/selectors';
 import { endRound } from 'store/game/operations';
 
 const styles = makeStyles(() => ({
@@ -35,6 +35,7 @@ export const WoodPile: React.FC = () => {
   const classes = styles();
   const topCard = useSelector(selectTopCardFromWoodPile);
   const currentPlayerNumber = useSelector(selectCurrentPlayerNumber);
+  const playerImage = useSelector(selectCurrentPlayerImage);
 
   const handleRedrawTopCard = (): void => {
     dispatch(redrawWoodPile(currentPlayerNumber));
@@ -56,7 +57,7 @@ export const WoodPile: React.FC = () => {
     <div className={classes.woodPileContainer}>
       <CommonLabel customStyles={labelStyle} label="Wood Pile" />
       <div className={classes.mainContainer}>
-        <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} />
+        {topCard && <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} playerImage={playerImage} />}
         <div className={classes.buttonContainer}>
           <CommonButton onClick={handleRedrawTopCard} title="Re-draw" width={150} />
           <CommonButton onClick={handleShuffleCard} title="Shuffle" width={150} />

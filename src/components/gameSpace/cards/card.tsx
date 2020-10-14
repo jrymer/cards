@@ -1,13 +1,13 @@
-import { Card } from 'models/card';
+import { Card, PlayerImages } from 'models/card';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectPlayerImage } from 'store/players/selectors';
+
 import { colorTransformer } from 'utils/colorTransformer';
 import { getImage } from 'utils/imageFunctions';
 
 interface CardProps {
   card: Card;
   handleClick?: (card: Card) => void;
+  playerImage: PlayerImages;
   height?: number;
   width?: number;
 }
@@ -21,10 +21,10 @@ const imageSizeDefault = 200;
 export const CardComponent: React.FC<CardProps> = ({
   card,
   handleClick,
+  playerImage,
   height = imageSizeDefault,
   width = imageSizeDefault
 }) => {
-  const playerImage = useSelector(selectPlayerImage);
   const { color, cardValue } = card;
   const style: React.CSSProperties = {
     height: height,

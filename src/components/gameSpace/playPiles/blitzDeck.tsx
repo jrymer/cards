@@ -1,9 +1,10 @@
-import CommonLabel from 'components/common/Label';
-import { CardComponent } from 'components/gameSpace/cards/card';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import CommonLabel from 'components/common/Label';
+import { CardComponent } from 'components/gameSpace/cards/card';
 import { setActiveBlitzCard } from 'store/players/actions';
-import { selectCurrentPlayerNumber, selectTopCardFromBlitzDeck } from 'store/players/selectors';
+import { selectCurrentPlayerImage, selectCurrentPlayerNumber, selectTopCardFromBlitzDeck } from 'store/players/selectors';
 
 const labelStyle: React.CSSProperties = {
   alignSelf: 'flex-start',
@@ -14,6 +15,7 @@ export const BlitzDeck: React.FC = () => {
   const dispatch = useDispatch();
   const topCard = useSelector(selectTopCardFromBlitzDeck);
   const currentPlayerNumber = useSelector(selectCurrentPlayerNumber);
+  const playerImage = useSelector(selectCurrentPlayerImage);
 
   const handleTopCardClicked = (): void => {
     dispatch(setActiveBlitzCard(topCard, currentPlayerNumber));
@@ -22,7 +24,7 @@ export const BlitzDeck: React.FC = () => {
   return (
     <div>
       <CommonLabel customStyles={labelStyle} label="Blitz Pile" />
-      <CardComponent handleClick={handleTopCardClicked} card={{...topCard}}/>
+      {topCard && <CardComponent handleClick={handleTopCardClicked} card={{...topCard}} playerImage={playerImage}/>}
     </div>
   )
 };
