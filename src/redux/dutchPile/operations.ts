@@ -4,7 +4,7 @@ import { AnyAction } from 'redux';
 import { selectGameId } from 'store/game/selectors';
 import { Piles, DutchPileAction } from 'models/piles';
 import gameService from 'services/game';
-import { selectCurrentPlayerHand, selectCurrentPlayerNumber, selectCurrentPlayerPointsFromDuthcPile } from 'store/players/selectors';
+import { selectCurrentPlayerHand, selectCurrentPlayerImage, selectCurrentPlayerNumber, selectCurrentPlayerPointsFromDuthcPile } from 'store/players/selectors';
 import { ActiveCard, HandState } from 'store/players';
 import { clearActiveCard } from 'store/players/actions';
 import { filterCard } from 'utils/deckFunctions';
@@ -13,6 +13,7 @@ import { State } from '..';
 export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: DutchPileAction, dutchPileId?: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: () => State): Promise<void> => {
     const gameId = selectGameId(getState());
     const playerNumber = selectCurrentPlayerNumber(getState());
+    const playerImage = selectCurrentPlayerImage(getState());
     const pointsFromDutchPile = selectCurrentPlayerPointsFromDuthcPile(getState()) + 1;
     const {blitzPile, postPile, woodPile} = selectCurrentPlayerHand(getState());
     let newHand: HandState = {activeCard, woodPile, blitzPile, postPile};
@@ -41,10 +42,10 @@ export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: Dut
     const roundScore = pointsFromDutchPile - blitzPileDeduction;
     switch (dutchPileAction) {
         case DutchPileAction.ADD:
-            await gameService.addCardToDutchPile(gameId, playerNumber, roundScore, pointsFromDutchPile, dutchPileId, newHand);
+            await gameService.addCardToDutchPile(gameId, playerNumber, playerImage, roundScore, pointsFromDutchPile, dutchPileId, newHand);
             break;
         case DutchPileAction.CREATE:
-            await gameService.createDutchPile(gameId, playerNumber, roundScore, pointsFromDutchPile, newHand);
+            await gameService.createDutchPile(gameId, playerNumber, playerImage, roundScore, pointsFromDutchPile, newHand);
             break;
     }
 

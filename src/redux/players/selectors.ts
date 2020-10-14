@@ -19,7 +19,7 @@ export const selectActivePlayers = (state: State): PlayerNumber[] | null => {
     return Object.keys(playerState).map((playerNumber: PlayerNumber) => playerNumber);
 };
 
-export const selectPlayerImage = (state: State): PlayerImages => selectCurrentPlayerState(state).playerImage;
+export const selectCurrentPlayerImage = (state: State): PlayerImages => selectCurrentPlayerState(state).playerImage;
 export const selectCurrentPlayerHand = (state: State): HandState => selectCurrentPlayerState(state).hand;
 export const selectCurrentPlayerNumber = (state: State): PlayerNumber => selectCurrentPlayerState(state).playerNumber;
 export const selectCurrentPlayerName = (state: State): string => selectCurrentPlayerState(state).name;
@@ -63,7 +63,6 @@ export const selectTopCardFromBlitzDeck = (state: State): Card | undefined => {
 }
 export const selectPostPile = (state: State): Card[] => {
     const postPile = selectCurrentPlayerHand(state).postPile;
-    console.log(postPile)
     return postPile 
 }
 export const selectTopCardFromWoodPile = (state: State): Card | undefined => {

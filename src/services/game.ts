@@ -1,4 +1,5 @@
 import { database } from 'firebase';
+import { PlayerImages } from 'models/card';
 import { LogEvent } from 'models/firebaseLogging';
 import { GameStatus } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
@@ -102,22 +103,24 @@ const resetDutchPiles = async (gameId: string): Promise<void> => {
     );
 };
 
-const addCardToDutchPile = async (gameId: string, playerId: PlayerNumber, roundScore: number, pointsFromDutchPile: number, dutchPileId: string, hand: HandState): Promise<void> => {
+const addCardToDutchPile = async (gameId: string, playerId: PlayerNumber, playerImage: PlayerImages, roundScore: number, pointsFromDutchPile: number, dutchPileId: string, hand: HandState): Promise<void> => {
     const dutchPileRef = db.realtime.ref(`${getDutchPilesRef(gameId)}/${dutchPileId}`);
     await dutchPileRef.push({
         ...hand.activeCard.card,
-        playerId
+        playerId,
+        playerImage
     });
     await updateRoundScore(gameId, playerId, roundScore, pointsFromDutchPile, hand);
 };
 
-const createDutchPile = async (gameId: string, playerId: PlayerNumber, roundScore: number, pointsFromDutchPile: number, hand: HandState): Promise<void> => {
+const createDutchPile = async (gameId: string, playerId: PlayerNumber, playerImage: PlayerImages, roundScore: number, pointsFromDutchPile: number, hand: HandState): Promise<void> => {
     const dutchPilesRef = db.realtime.ref(getDutchPilesRef(gameId));
     const dutchPileId = dutchPilesRef.push().key;
     const newDutchPileRef = db.realtime.ref(`${getDutchPilesRef(gameId)}/${dutchPileId}`);
     await newDutchPileRef.push({
         ...hand.activeCard.card,
-        playerId
+        playerId,
+        playerImage
     });
     await updateRoundScore(gameId, playerId, roundScore, pointsFromDutchPile, hand);
 }
