@@ -1,4 +1,6 @@
-import { ThunkDispatch } from 'redux-thunk'; import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk'; 
+import { AnyAction } from 'redux';
+
 import { selectGameId } from 'store/game/selectors';
 import { Piles, DutchPileAction } from 'models/piles';
 import gameService from 'services/game';
@@ -17,26 +19,25 @@ export const validDutchPileClick = (activeCard: ActiveCard, dutchPileAction: Dut
 
     switch (activeCard.pile) {
         case Piles.BLITZ:
-            // dispatch(newTopBlitzCard(playerNumber));
-            newHand = {...newHand, blitzPile: blitzPile.slice(1)}
+            newHand = {...newHand, blitzPile: blitzPile ? blitzPile.slice(1) : []}
             break;
         case Piles.POST: {
             // Removing the selected post pile card from the post pile
             // then moving the top card from the blitz pile onto the post pile.
-            const newPostPile = [...filterCard(postPile, activeCard.card), ...blitzPile.slice(0,1)];
+            // If the blitz pile is empty dont add anything to the post pile
+            const newPostPile = blitzPile
+                ? [...filterCard(postPile, activeCard.card), ...blitzPile.slice(0,1)]
+                : [...filterCard(postPile, activeCard.card)];
             // Remove the top blitz card
-            newHand = {...newHand, postPile: newPostPile, blitzPile: blitzPile.slice(1)};
-            // dispatch(topBlitzCardToPostPile(playerNumber));
-            // dispatch(newTopBlitzCard(playerNumber));
+            newHand = {...newHand, postPile: newPostPile, blitzPile: blitzPile ? blitzPile.slice(1) : []};
             break;
         }
         case Piles.WOOD:
             newHand = {...newHand, woodPile: filterCard(woodPile, activeCard.card)};
-            // dispatch(removeTopCardFromWoodPile(card, playerNumber));
             break;
     }
 
-    const blitzPileDeduction = blitzPile.length * 2;
+    const blitzPileDeduction = blitzPile ? blitzPile.length * 2 : 0;
     const roundScore = pointsFromDutchPile - blitzPileDeduction;
     switch (dutchPileAction) {
         case DutchPileAction.ADD:

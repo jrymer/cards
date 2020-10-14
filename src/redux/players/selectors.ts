@@ -57,6 +57,16 @@ export const selectOpponentsHands = (state: State): OpponentsHands[] => {
             }
         });
 };
-export const selectTopCardFromBlitzDeck = (state: State): Card => selectCurrentPlayerHand(state).blitzPile[0];
-export const selectPostPile = (state: State): Card[] => selectCurrentPlayerHand(state).postPile;
-export const selectTopCardFromWoodPile = (state: State): Card => selectCurrentPlayerHand(state).woodPile[0];
+export const selectTopCardFromBlitzDeck = (state: State): Card | undefined => {
+    const blitzDeck = selectCurrentPlayerHand(state).blitzPile;
+    return blitzDeck && blitzDeck[0];
+}
+export const selectPostPile = (state: State): Card[] => {
+    const postPile = selectCurrentPlayerHand(state).postPile;
+    console.log(postPile)
+    return postPile 
+}
+export const selectTopCardFromWoodPile = (state: State): Card | undefined => {
+    const woodPile = selectCurrentPlayerHand(state).woodPile;
+    return woodPile && woodPile[0];
+}

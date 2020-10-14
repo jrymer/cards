@@ -56,7 +56,7 @@ export const WoodPile: React.FC = () => {
     <div className={classes.woodPileContainer}>
       <CommonLabel customStyles={labelStyle} label="Wood Pile" />
       <div className={classes.mainContainer}>
-        <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} />
+        {topCard && <CardComponent handleClick={handleAddTopCardToDutchPile} card={{ ...topCard }} />}
         <div className={classes.buttonContainer}>
           <CommonButton onClick={handleRedrawTopCard} title="Re-draw" width={150} />
           <CommonButton onClick={handleShuffleCard} title="Shuffle" width={150} />

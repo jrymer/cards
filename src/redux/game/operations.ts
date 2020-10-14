@@ -43,8 +43,8 @@ export const mockGame = () => async (dispatch: thunkDispatch): Promise<void> => 
     const playerOneHand = getHand();
     playerOneHand.postPile = [
         {cardValue: 1, color: CardColorNames.RED},
-        {cardValue: 2, color: CardColorNames.RED},
-        {cardValue: 3, color: CardColorNames.RED}
+        {cardValue: 1, color: CardColorNames.BLUE},
+        {cardValue: 1, color: CardColorNames.GREEN}
     ];
     playerOneHand.blitzPile = [
         {cardValue: 1, color: CardColorNames.BLUE},
@@ -53,9 +53,9 @@ export const mockGame = () => async (dispatch: thunkDispatch): Promise<void> => 
         {cardValue: 1, color: CardColorNames.RED},
         {cardValue: 1, color: CardColorNames.RED},
         {cardValue: 1, color: CardColorNames.RED},
-        {cardValue: 10, color: CardColorNames.RED},
+        {cardValue: 1, color: CardColorNames.RED},
         {cardValue: 1, color: CardColorNames.BLUE},
-        {cardValue: 2, color: CardColorNames.BLUE}
+        {cardValue: 1, color: CardColorNames.BLUE}
     ];
     const mockPlayers: {[PlayerNumber.PLAYER_ONE]: PlayerState, [PlayerNumber.PLAYER_TWO]: PlayerState} = {
         [PlayerNumber.PLAYER_ONE]: {

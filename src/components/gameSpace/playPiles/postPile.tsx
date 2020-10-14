@@ -36,11 +36,12 @@ export const PostPile: React.FC = () => {
     <CardComponent key={index} handleClick={handleCardClick} card={{ ...card }} />
   ));
 
+  console.log(postPileFromState)
   return (
     <div className={classes.mainContainer}>
       <CommonLabel customStyles={labelStyle} label="Post Pile" />
       <div className={classes.postPileContainer}>
-        {postPile}
+        {postPileFromState && postPile}
       </div>
     </div>
   )

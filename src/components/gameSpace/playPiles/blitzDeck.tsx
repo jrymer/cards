@@ -22,7 +22,7 @@ export const BlitzDeck: React.FC = () => {
   return (
     <div>
       <CommonLabel customStyles={labelStyle} label="Blitz Pile" />
-      <CardComponent handleClick={handleTopCardClicked} card={{...topCard}}/>
+      {topCard && <CardComponent handleClick={handleTopCardClicked} card={{...topCard}}/>}
     </div>
   )
 };
