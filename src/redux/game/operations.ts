@@ -1,8 +1,10 @@
 import { database } from 'firebase';
 import { CardColorNames, PlayerImages } from 'models/card';
+import { LogEvent } from 'models/firebaseLogging';
 import { PlayerNumber } from 'models/playerNumbers';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { logEvent } from 'services/firebase';
 import gameService from 'services/game';
 import { updatePlayersAtEndRoundWithTotalScore } from 'services/player';
 import { resetDutchPiles, updateDutchPiles } from 'store/dutchPile/actions';
@@ -86,7 +88,9 @@ export const joinGame = (gameId: string) => async (dispatch: ThunkDispatch<{}, {
     handleGameUpdates(game, dispatch);
 };
 
-export const startGame = (gameId: string) => async (): Promise<void> => {
+export const startGame = (gameId: string) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState: () => State): Promise<void> => {
+    const players = Object.keys(selectPlayerState(getState())).map((playerNumber) => playerNumber);
+    logEvent(`${LogEvent.START_GAME} ${players}`);
     await gameService.startGame(gameId);
 };
 

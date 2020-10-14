@@ -1,8 +1,9 @@
 import { database } from 'firebase';
+import { LogEvent } from 'models/firebaseLogging';
 import { GameStatus } from 'models/games';
 import { PlayerNumber } from 'models/playerNumbers';
-import db from 'services/firebase';
-import { HandState, Player, PlayerState } from 'store/players';
+import db, { logEvent } from 'services/firebase';
+import { HandState, PlayerState } from 'store/players';
 import playerCardRandomizer from 'utils/playerCardRandomizer';
 import { updateRoundScore } from './player';
 
@@ -29,7 +30,7 @@ const createGame = async (): Promise<database.Reference> => {
     });
 
     gamesRef.onDisconnect().remove();
-
+    logEvent(LogEvent.CREATE_GAME);
     return game;
 }
 
@@ -88,6 +89,7 @@ const endGame = async (gameId: string): Promise<void> => {
 }
 
 const endRound = async (gameId: string): Promise<void> => {
+    logEvent(LogEvent.END_ROUND);
     await db.realtime.ref(getGameRef(gameId)).update({
         gameStatus: GameStatus.NEW_ROUND_LOBBY
     });
