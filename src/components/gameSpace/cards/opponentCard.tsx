@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import { Card, PlayerImages } from 'models/card';
 import React from 'react';
 import { colorTransformer } from 'utils/colorTransformer';
-import { getImage } from 'utils/imageFunctions';
+import { getPlayerImage } from 'utils/imageFunctions';
 
 interface CardProps {
     card: Card;
@@ -37,7 +37,7 @@ export const OpponentCard: React.FC<CardProps> = ({ card, image }) => {
         borderRadius: 10,
         boxShadow: '10px 5px 10px rgba(0, 0, 0, 0.4)',
         backgroundColor: colorTransformer(color),
-        backgroundImage: `url(${getImage(image)})`,
+        backgroundImage: `url(${getPlayerImage(image)})`,
         backgroundSize: '55% 55%',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
