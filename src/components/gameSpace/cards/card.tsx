@@ -2,7 +2,7 @@ import { Card, PlayerImages } from 'models/card';
 import React from 'react';
 
 import { colorTransformer } from 'utils/colorTransformer';
-import { getImage } from 'utils/imageFunctions';
+import { getPlayerImage } from 'utils/imageFunctions';
 
 interface CardProps {
   card: Card;
@@ -34,7 +34,7 @@ export const CardComponent: React.FC<CardProps> = ({
     borderRadius: 25,
     boxShadow: '10px 5px 10px rgba(0, 0, 0, 0.4)',
     backgroundColor: colorTransformer(color),
-    backgroundImage: `url(${getImage(playerImage)})`,
+    backgroundImage: `url(${getPlayerImage(playerImage)})`,
     backgroundSize: '55% 55%',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',

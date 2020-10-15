@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { PlayerImages } from 'models/card';
-import { getImage } from 'utils/imageFunctions';
+import { getPlayerImage } from 'utils/imageFunctions';
 
 interface Props {
     backgroundColor?: string;
@@ -35,7 +35,7 @@ const PlayerImageCard: React.FC<Props> = (({
 
     return (
         <div style={style}  onClick={disabled ? () => {} : onClick}>
-            <img alt={source} height={height} width={width} src={getImage(source)} />
+            <img alt={source} height={height} width={width} src={getPlayerImage(source)} />
         </div>
     );
 });

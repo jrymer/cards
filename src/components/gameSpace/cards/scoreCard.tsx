@@ -2,7 +2,7 @@ import { grey } from '@material-ui/core/colors';
 import CommonLabel from 'components/common/Label';
 import { PlayerImages } from 'models/card';
 import React from 'react';
-import { getImage } from 'utils/imageFunctions';
+import { getPlayerImage } from 'utils/imageFunctions';
 
 interface CardProps {
     image: PlayerImages;
@@ -24,7 +24,7 @@ export const ScoreCard: React.FC<CardProps> = ({
         borderRadius: 25,
         boxShadow: '10px 5px 10px rgba(0, 0, 0, 0.4)',
         backgroundColor: grey[500],
-        backgroundImage: `url(${getImage(image)})`,
+        backgroundImage: `url(${getPlayerImage(image)})`,
         backgroundSize: '55% 55%',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',

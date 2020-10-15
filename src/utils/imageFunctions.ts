@@ -1,9 +1,11 @@
-import * as images from '../assets/images';
+import * as images from 'assets/images/playerImages';
+import * as tutorialImages from 'assets/images/tutorialImages';
 
 import { PlayerImages } from 'models/card';
+import { TutorialImages } from 'models/tutorialImages';
 
 
-export const getImage = (source: PlayerImages) => {
+export const getPlayerImage = (source: PlayerImages): string => {
     switch (source) {
         case PlayerImages.BUCKET:
             return images.waterbucket;
@@ -25,5 +27,16 @@ export const getImage = (source: PlayerImages) => {
             return images.basket;
         case PlayerImages.WHEAT:
             return images.wheat;
+    }
+};
+
+export const getTutorialImage = (source: TutorialImages): string => {
+    switch (source) {
+        case TutorialImages.ACTIONS:
+            return tutorialImages.actionButtons;
+        case TutorialImages.ACTIVE:
+            return tutorialImages.activeCard;
+        case TutorialImages.MAIN:
+            return tutorialImages.mainScreen;
     }
 };
