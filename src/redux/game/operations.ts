@@ -48,6 +48,17 @@ export const mockGame = () => async (dispatch: thunkDispatch): Promise<void> => 
     ];
     playerOneHand.blitzPile = [
         {cardValue: 1, color: CardColorNames.BLUE},
+        {cardValue: 2, color: CardColorNames.BLUE},
+        {cardValue: 3, color: CardColorNames.BLUE},
+        {cardValue: 4, color: CardColorNames.BLUE},
+        {cardValue: 5, color: CardColorNames.BLUE},
+        {cardValue: 6, color: CardColorNames.BLUE},
+        {cardValue: 7, color: CardColorNames.BLUE},
+        {cardValue: 8, color: CardColorNames.BLUE},
+        {cardValue: 9, color: CardColorNames.BLUE}
+    ];
+    playerOneHand.woodPile = [
+        {cardValue: 10, color: CardColorNames.BLUE},
         {cardValue: 1, color: CardColorNames.GREEN},
         {cardValue: 1, color: CardColorNames.YELLOW},
         {cardValue: 1, color: CardColorNames.RED},
@@ -100,7 +111,7 @@ export const endRound = () => async (dispatch: ThunkDispatch<{}, {}, AnyAction>,
     Object.keys(players).forEach((playerId: PlayerNumber) => {
         const playerState = players[playerId];
         const {hand, pointsFromDutchPile, totalScore} =  playerState;
-        const blitzPileDeduction = hand.blitzPile.length * 2;
+        const blitzPileDeduction = hand.blitzPile ? hand.blitzPile.length * 2 : 0;
         const roundScore = pointsFromDutchPile - blitzPileDeduction;
         players[playerId].roundScore = roundScore;
         players[playerId].totalScore = totalScore + roundScore;

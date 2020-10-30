@@ -51,9 +51,8 @@ export const selectOpponentsHands = (state: State): OpponentsHands[] => {
             return {
                 name,
                 playerImage,
-                topBlitzCard: hand.blitzPile.slice(0, 1)[0],
-                postPile: hand.postPile,
-                topWoodCard: hand.woodPile.slice(0, 1)[0],
+                topBlitzCard: hand.blitzPile ? hand.blitzPile.slice(0, 1)[0] : undefined,
+                postPile: hand.postPile
             }
         });
 };

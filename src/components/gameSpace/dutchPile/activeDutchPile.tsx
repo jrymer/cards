@@ -16,7 +16,7 @@ export interface DutchPileProps {
   playerImage: PlayerImages;
 }
 
-const imageSize = 150;
+const imageSize = 100;
 
 export const DutchPileComponent: React.FC<DutchPileProps> = ({ activeCard, topCard, id, playerImage }) => {
   const dispatch = useDispatch();

@@ -6,9 +6,10 @@ import CommonButton from 'components/common/CommonButton';
 import CommonLabel from 'components/common/Label';
 import { CardComponent } from 'components/gameSpace/cards/card';
 import { Card } from 'models/card';
-import { redrawWoodPile, setActiveWoodCard, shuffleWoodPile } from 'store/players/actions';
+import { setActiveWoodCard } from 'store/players/actions';
 import { selectCurrentPlayerImage, selectCurrentPlayerNumber, selectTopCardFromWoodPile } from 'store/players/selectors';
 import { endRound } from 'store/game/operations';
+import { updateTopWoodCard, updateWoodPileFromShuffle } from 'store/players/operations';
 
 const styles = makeStyles(() => ({
   woodPileContainer: {
@@ -38,7 +39,7 @@ export const WoodPile: React.FC = () => {
   const playerImage = useSelector(selectCurrentPlayerImage);
 
   const handleRedrawTopCard = (): void => {
-    dispatch(redrawWoodPile(currentPlayerNumber));
+    dispatch(updateTopWoodCard(currentPlayerNumber));
   };
 
   const handleAddTopCardToDutchPile = (card: Card): void => {
@@ -46,7 +47,7 @@ export const WoodPile: React.FC = () => {
   };
 
   const handleShuffleCard = (): void => {
-    dispatch(shuffleWoodPile(currentPlayerNumber));
+    dispatch(updateWoodPileFromShuffle(currentPlayerNumber));
   };
 
   const handleEndRound = (): void => {

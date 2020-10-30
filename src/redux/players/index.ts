@@ -14,7 +14,6 @@ export interface OpponentsHands {
     playerImage: PlayerImages;
     topBlitzCard: Card;
     postPile: Card[];
-    topWoodCard: Card;
 }
 
 export interface Player {
