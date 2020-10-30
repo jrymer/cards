@@ -1,3 +1,4 @@
+import { makeStyles } from '@material-ui/core';
 import { Card, PlayerImages } from 'models/card';
 import React from 'react';
 
@@ -13,6 +14,17 @@ interface CardProps {
 }
 const imageSizeDefault = 200;
 
+const styles = makeStyles(() => ({
+  topRight: {
+      alignSelf: 'flex-end',
+      justifySelf: 'flex-start'
+  },
+  bottomLeft: {
+      alignSelf: 'flex-start',
+      justifySelf: 'flex-end'
+  }
+}));
+
 /**
  * Renders a card with a number and colored background
  *
@@ -25,6 +37,7 @@ export const CardComponent: React.FC<CardProps> = ({
   height = imageSizeDefault,
   width = imageSizeDefault
 }) => {
+  const classes = styles();
   const { color, cardValue } = card;
   const style: React.CSSProperties = {
     height: height,
@@ -47,12 +60,12 @@ export const CardComponent: React.FC<CardProps> = ({
     fontSize: 'x-large'
   };
 
-  const handleCardClick = (): void => handleClick(card);
+  const handleCardClick = (): void => handleClick && handleClick(card);
 
   return (
     <div style={style} onClick={handleCardClick}>
-      <span>{cardValue}</span>
-      <span>{cardValue}</span>
+      <span className={classes.topRight}>{cardValue}</span>
+      <span className={classes.bottomLeft}>{cardValue}</span>
     </div>
   )
 }

@@ -18,8 +18,18 @@ export const NEW_BLITZ_TOP_CARD = '[PLAYERS] NEW_BLITZ_TOP_CARD';
 export const CLEAR_ACTIVE_CARD = '[PLAYERS] CLEAR_ACTIVE_CARD';
 
 export const SET_SCORE = '[PLAYERS] SET_SCORE';
+export const INITIALIZE_PLAYER = '[PLAYERS] INITIALIZE_PLAYER';
 export const UPDATE_PLAYERS = '[PLAYERS] UPDATE_PLAYERS';
 export const INITIALIZE_HAND = '[PLAYERS] INITIALIZE_HAND'
+export const RESET_PLAYER_HAND = '[PLAYERS] RESET_PLAYER_HAND'
+
+interface ResetPlayerHand {
+    type: typeof RESET_PLAYER_HAND;
+}
+
+interface InitializePlayer {
+    type: typeof INITIALIZE_PLAYER;
+}
 
 interface UpdatePlayers {
     type: typeof UPDATE_PLAYERS;
@@ -83,7 +93,6 @@ interface SetScoreAction {
 
 interface RedrawWoodPile {
     type: typeof REDRAW_WOOD_PILE;
-    payload: { playerId: PlayerNumber };
 }
 
 interface RemoveTopCardFromWoodPile {
@@ -96,7 +105,6 @@ interface RemoveTopCardFromWoodPile {
 
 interface ShuffleWoodPile {
     type: typeof SHUFFLE_WOOD_PILE;
-    payload: { playerId: PlayerNumber };
 }
 
 interface ClearActiveCard {
@@ -127,12 +135,9 @@ export const setActiveWoodCard = (card: Card, playerId: PlayerNumber): SetActive
     };
 };
 
-export const shuffleWoodPile = (playerId: PlayerNumber): ShuffleWoodPile => {
-    return {
-        type: SHUFFLE_WOOD_PILE,
-        payload: { playerId }
-    }
-};
+export const shuffleWoodPile = (): ShuffleWoodPile => ({
+    type: SHUFFLE_WOOD_PILE
+})
 
 export const removeTopCardFromWoodPile = (card: Card, playerId: PlayerNumber): RemoveTopCardFromWoodPile => {
     return {
@@ -158,12 +163,9 @@ export const topBlitzCardToPostPile = (playerId: PlayerNumber): TopBlitzToPostPi
 );
 
 
-export const redrawWoodPile = (playerId: PlayerNumber): RedrawWoodPile => {
-    return {
-        type: REDRAW_WOOD_PILE,
-        payload: { playerId }
-    }
-};
+export const redrawWoodPile = (): RedrawWoodPile => ({
+    type: REDRAW_WOOD_PILE
+})
 
 export const setActiveBlitzCard = (card: Card, playerId: PlayerNumber): SetActiveBlitzCard => {
     return {
@@ -196,10 +198,16 @@ export const clearActiveCard = ( playerId: PlayerNumber): ClearActiveCard => ({
     payload: {playerId}
 });
 
+export const resetPlayerHand = (): ResetPlayerHand => ({type: RESET_PLAYER_HAND});
+
+export const initializePlayer = (): InitializePlayer => ({type: INITIALIZE_PLAYER});
+
 export type PlayerActionTypes =
     | UpdatePlayers
+    | InitializePlayer
     | InitializeHand
     | SetScoreAction
+    | ResetPlayerHand
 
     | SetActiveBlitzCard
     | NewTopBlitzCardAction

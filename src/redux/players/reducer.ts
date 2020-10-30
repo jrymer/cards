@@ -64,27 +64,6 @@ export const playerReducer = (state = initialPlayerState, action: playerActions.
                     activeCard: { ...action.payload }
                 }
             };
-        case playerActions.REDRAW_WOOD_PILE: {
-            const topThree = state.hand.woodPile.slice(0, 3);
-            const rest = state.hand.woodPile.slice(3);
-            const topThreeToBack = rest.concat(topThree);
-
-            return {
-                ...state,
-                hand: {
-                    ...state.hand,
-                    woodPile: topThreeToBack
-                }
-            }
-        }
-        case playerActions.SHUFFLE_WOOD_PILE:
-            return {
-                ...state,
-                hand: {
-                    ...state.hand,
-                    woodPile: [...state.hand.woodPile.slice(1).concat(state.hand.woodPile.slice(0, 1))]
-                }
-            };
         case playerActions.REMOVE_TOP_CARD_FROM_WOOD_PILE: {
             const {card} = action.payload;
             

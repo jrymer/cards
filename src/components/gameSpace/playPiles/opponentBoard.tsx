@@ -42,9 +42,6 @@ const styles = makeStyles(() => ({
         display: 'flex',
         flexDirection: props.vertical ? 'column' : 'row'
     }),
-    woodContainer: (props: StyleProps) => ({
-        textAlign: 'center',
-    }),
 }));
 
 const OpponentBoard: React.FC<Props> = ({ gridClass, opponent, vertical = false }) => {
@@ -72,15 +69,11 @@ const OpponentBoard: React.FC<Props> = ({ gridClass, opponent, vertical = false 
             <div className={flexDirection}>
                 <div className={classes.blitzContainer}>
                     <CommonLabel label="Blitz" />
-                    <OpponentCard card={opponent.topBlitzCard} image={opponent.playerImage} />
+                    {opponent.topBlitzCard && (<OpponentCard card={opponent.topBlitzCard} image={opponent.playerImage} />)}
                 </div>
                 <div className={classes.postContainer}>
                     <CommonLabel label="Post" />
                     {renderPostPile}
-                </div>
-                <div className={classes.woodContainer}>
-                    <CommonLabel label="Wood" />
-                    <OpponentCard card={opponent.topWoodCard} image={opponent.playerImage} />
                 </div>
             </div>
         </div>

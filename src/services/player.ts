@@ -1,4 +1,5 @@
 import { database } from 'firebase';
+import { Card } from 'models/card';
 import { PlayerNumber } from 'models/playerNumbers';
 import db from 'services/firebase';
 import { HandState, Player, PlayerState } from 'store/players';
@@ -33,7 +34,6 @@ export const updateRoundScore = async (gameId: string, playerId: PlayerNumber, r
     });
 }
 
-// REFACTORE THE ROUND SCORE SO THAT FIREBASE IS UP TO DATE NOT JUST THE DUTCH CARD POINTS
 export const updatePlayersAtEndRoundWithTotalScore = async (gameId: string, players: {
     [key in PlayerNumber]: PlayerState
 }): Promise<void> => {
@@ -45,5 +45,11 @@ export const updatePlayersAtEndRoundWithTotalScore = async (gameId: string, play
 export const resetHand = async (gameId: string, playerId: PlayerNumber, hand: HandState): Promise<void> => {
     await db.realtime.ref(`${getPlayersRef(gameId)}/${playerId}`).update({
         hand
+    });
+}
+
+export const updateWoodPile = async (gameId: string, playerNumber: PlayerNumber, woodPile: Card[]): Promise<void> => {
+    await db.realtime.ref(`${getPlayersRef(gameId)}/${playerNumber}/hand`).update({
+        woodPile
     });
 }

@@ -52,7 +52,7 @@ export const DutchPileContainerComponent: React.FC<Props> = ({gridClass}) => {
       const cardValues = {...Object.values(dutchPiles[key])[topDutchIndex]};
       const topCard: Card = {cardValue: cardValues.cardValue, color: cardValues.color};
       const playerImage = Object.values(dutchPiles[key])[topDutchIndex].playerImage;
-      return  <DutchPileComponent key={key} activeCard={activeCard} topCard={topCard} id={key} playerImage={playerImage}/>
+      return  topCard.cardValue !== 10 && <DutchPileComponent key={key} activeCard={activeCard} topCard={topCard} id={key} playerImage={playerImage}/>
     })
   );
 
