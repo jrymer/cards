@@ -1,5 +1,5 @@
-import React from 'react';
 import { makeStyles, Typography } from '@material-ui/core';
+import React from 'react';
 
 const styles = makeStyles(() => ({
     root: {
@@ -17,7 +17,7 @@ const Contact: React.FC = () => {
     return (
         <div className={classes.root}>
             <Typography variant="body1">
-                Contact me for feedback, improvements, and questions at jrymer1@gmail.com
+                Contact me for feedback, improvements, and questions at 
             </Typography>
         </div>
     );
